@@ -21,6 +21,16 @@
 		};
 	};
 	/* USER CODE BEGIN root */
+	dtb-registry {
+		soc_fw-config {
+			load-address = <0x0 0x81fc0000>;
+			max-size = <0x40000>;
+		};
+		tos_fw {
+			load-address = <0x0 0x82000000>;
+			max-size = <0x2000000>;
+		};
+	};
 	/* USER CODE END root */
 };
 
