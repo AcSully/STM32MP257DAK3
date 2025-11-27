@@ -262,6 +262,13 @@
 	/* USER CODE END i2c7 */
 };
 
+&pwr {
+	status = "okay";
+
+	/* USER CODE BEGIN pwr */
+	/* USER CODE END pwr */
+};
+
 &rcc {
 	status = "okay";
 

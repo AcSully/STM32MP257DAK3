@@ -37,20 +37,6 @@
 }; /*root*/
 
 &pinctrl {
-	usart2_pins_mx: usart2_mx-0 {
-		pins1 {
-			pinmux = <STM32_PINMUX('A', 4, AF6)>; /* USART2_TX */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-		pins2 {
-			pinmux = <STM32_PINMUX('A', 8, AF8)>; /* USART2_RX */
-			bias-disable;
-			drive-push-pull;
-		};
-	};
-
 	/* USER CODE BEGIN pinctrl */
 	/* USER CODE END pinctrl */
 };
@@ -72,15 +58,6 @@
 
 	/* USER CODE BEGIN systick */
 	/* USER CODE END systick */
-};
-
-&usart2 {
-	pinctrl-names = "default";
-	pinctrl-0 = <&usart2_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN usart2 */
-	/* USER CODE END usart2 */
 };
 
 /* USER CODE BEGIN addons */
