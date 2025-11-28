@@ -45,6 +45,14 @@
 	chosen {
 		stdout-path = "serial0:115200n8";
 	};
+	
+	shadow-prov {
+		compatible = "st,provisioning";
+		hconf1_prov {
+			nvmem-cells = <&hconf1_otp>;
+			st,shadow-value = <0x00018DB6>;
+		};
+	};
 	/* USER CODE END root */
 
 }; /*root*/
@@ -453,6 +461,57 @@
 	status = "okay";
 
 	/* USER CODE BEGIN pwr */
+	wakeup-gpios = <&gpioa 0 GPIO_ACTIVE_HIGH>, <0>, <0>, <0>, <0>, <0>;
+
+	vdd33ucpd: vdd33ucpd {
+		status = "okay";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		vdd33ucpd-supply = <&vdd3v3_usb>;
+	};
+
+	vdda18adc: vdda18adc {
+		status = "okay";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		vdda18adc-supply = <&v1v8>;
+		regulator-always-on;
+	};
+
+	vddgpu: vddgpu {
+		status = "okay";
+		vddgpu-supply = <&vddgpu_pmic>;
+	};
+
+	vddio1: vddio1 {
+		status = "okay";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <3300000>;
+		vddio1-supply = <&vddio_sdcard>;
+	};
+
+	vddio2: vddio2 {
+		status = "okay";
+		vddio2-supply = <&v1v8>;
+		regulator-always-on;
+	};
+
+	vddio3: vddio3 {
+		status = "okay";
+		vddio3-supply = <&vddio_pmic>;
+		regulator-always-on;
+	};
+
+	vddio4: vddio4 {
+		status = "okay";
+		vddio4-supply = <&vddio_pmic>;
+		regulator-always-on;
+	};
+
+	vddio: vddio {
+		status = "okay";
+		vdd-supply = <&vddio_pmic>;
+	};
 	
 	/* USER CODE END pwr */
 };
@@ -564,5 +623,18 @@
 	pinctrl-0 = <&usart2_pins_a>;
 	status = "okay";
 };
+
+&hash {
+	status = "okay";
+};
+
+/*&risaf2 {
+	status = "okay";
+};
+
+&risaf5 {
+	status = "okay";
+};*/
+
 /* USER CODE END addons */
 
