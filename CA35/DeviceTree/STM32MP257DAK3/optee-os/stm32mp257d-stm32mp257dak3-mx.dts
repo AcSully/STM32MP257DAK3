@@ -548,6 +548,13 @@
 	/* USER CODE END rcc */
 };
 
+&risaf5 {
+	status = "okay";
+
+	/* USER CODE BEGIN risaf5 */
+	/* USER CODE END risaf5 */
+};
+
 &serc {
 	status = "okay";
 

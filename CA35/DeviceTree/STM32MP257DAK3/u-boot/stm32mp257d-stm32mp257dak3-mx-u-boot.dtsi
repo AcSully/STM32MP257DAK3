@@ -16,6 +16,14 @@
 / {
 
 	/* USER CODE BEGIN root */
+	config {
+		u-boot,mmc-env-partition = "u-boot-env";
+	};
+
+	fwu-mdata {
+		compatible = "u-boot,fwu-mdata-gpt";
+		fwu-mdata-store = <&sdmmc1>;
+	};
 	/* USER CODE END root */
 
 	clocks{
@@ -27,5 +35,9 @@
 }; /*root*/
 
 /* USER CODE BEGIN addons */
+&dwc3 {
+	dr_mode = "peripheral";
+	/delete-node/ port;
+};
 /* USER CODE END addons */
 

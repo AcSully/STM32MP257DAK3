@@ -43,6 +43,27 @@
 
 &pinctrl {
 
+	pcie_pins_mx: pcie_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, AF4)>; /* PCIE_CLKREQN */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	pcie_init_pins_mx: pcie_init_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, ANALOG)>; /* PCIE_CLKREQN */
+		};
+	};
+
+	pcie_sleep_pins_mx: pcie_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 8, ANALOG)>; /* PCIE_CLKREQN */
+		};
+	};
+
 	sdmmc1_pins_mx: sdmmc1_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('E', 0, AF10)>, /* SDMMC1_D2 */
@@ -247,6 +268,17 @@
 	/* USER CODE END m33_rproc */
 };
 
+&pcie_rc {
+	pinctrl-names = "default", "init", "sleep";
+	pinctrl-0 = <&pcie_pins_mx>;
+	pinctrl-1 = <&pcie_init_pins_mx>;
+	pinctrl-2 = <&pcie_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN pcie_rc */
+	/* USER CODE END pcie_rc */
+};
+
 &sdmmc1 {
 	pinctrl-names = "default", "opendrain", "sleep";
 	pinctrl-0 = <&sdmmc1_pins_mx>;
@@ -306,6 +338,20 @@
 
 	/* USER CODE BEGIN usbh */
 	/* USER CODE END usbh */
+};
+
+&vdec {
+	status = "okay";
+
+	/* USER CODE BEGIN vdec */
+	/* USER CODE END vdec */
+};
+
+&venc {
+	status = "okay";
+
+	/* USER CODE BEGIN venc */
+	/* USER CODE END venc */
 };
 
 /* USER CODE BEGIN addons */
