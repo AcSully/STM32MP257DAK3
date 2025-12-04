@@ -20,7 +20,6 @@
 
 /* USER CODE BEGIN includes */
 #include <dt-bindings/mfd/st,stpmic2.h>
-#include <dt-bindings/tamper/st,stm32mp25-tamp.h>
 #include "stm32mp25-pinctrl.dtsi"
 #include "stm32mp25-st-scmi-cfg.dtsi"
 /* USER CODE END includes */
@@ -611,19 +610,6 @@
 	};
 };
 
-&tamp {
-	wakeup-source;
-	st,tamp-passive-precharge = <2>;
-	st,tamp-passive-nb-sample = <4>;
-	st,tamp-passive-sample-clk-div = <16384>;
-
-	tamp-button{
-		status = "okay";
-		tamper-gpios = <&gpioi 8 0>;
-		st,tamp-mode = <TAMPER_CONFIRMED_MODE>;
-		st,tamp-id = <1>;
-	};
-};
 
 &usart2 {
 	pinctrl-names = "default";

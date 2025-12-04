@@ -289,16 +289,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc1 */
-	cd-gpios = <&gpioi 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
-	disable-wp;
-	st,neg-edge;
-	bus-width = <4>;
-	vmmc-supply = <&scmi_vdd_sdcard>;
-	vqmmc-supply = <&scmi_vddio1>;
-	sd-uhs-sdr12;
-	sd-uhs-sdr25;
-	sd-uhs-sdr50;
-	sd-uhs-ddr50;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -308,13 +298,6 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc2 */
-	non-removable;
-	no-sd;
-	no-sdio;
-	st,neg-edge;
-	bus-width = <8>;
-	vmmc-supply = <&vdd_emmc>;
-	vqmmc-supply = <&vddio2>;
 	/* USER CODE END sdmmc2 */
 };
 
