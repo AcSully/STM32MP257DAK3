@@ -43,6 +43,18 @@
 
 &pinctrl {
 
+	adc3_pins_mx: adc3_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
+		};
+	};
+
+	adc3_sleep_pins_mx: adc3_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
+		};
+	};
+
 	eth1_mdio_pins_mx: eth1_mdio_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('F', 0, AF10)>; /* ETH1_MDC */
@@ -423,8 +435,35 @@
 
 &pinctrl_z {
 
+	i2c8_pins_z_mx: i2c8_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('Z', 4, AF8)>, /* I2C8_SCL */
+					 <STM32_PINMUX('Z', 9, AF8)>; /* I2C8_SDA */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c8_sleep_pins_z_mx: i2c8_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I2C8_SCL */
+					 <STM32_PINMUX('Z', 9, ANALOG)>; /* I2C8_SDA */
+		};
+	};
+
 	/* USER CODE BEGIN pinctrl_z */
 	/* USER CODE END pinctrl_z */
+};
+
+&adc_3 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&adc3_pins_mx>;
+	pinctrl-1 = <&adc3_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN adc_3 */
+	/* USER CODE END adc_3 */
 };
 
 &combophy {
@@ -432,6 +471,13 @@
 
 	/* USER CODE BEGIN combophy */
 	/* USER CODE END combophy */
+};
+
+&dsi {
+	status = "okay";
+
+	/* USER CODE BEGIN dsi */
+	/* USER CODE END dsi */
 };
 
 &eth1 {
@@ -480,6 +526,16 @@
 
 	/* USER CODE BEGIN hpdma3 */
 	/* USER CODE END hpdma3 */
+};
+
+&i2c8 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c8_pins_z_mx>;
+	pinctrl-1 = <&i2c8_sleep_pins_z_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN i2c8 */
+	/* USER CODE END i2c8 */
 };
 
 &m33_rproc {
