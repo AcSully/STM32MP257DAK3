@@ -16,6 +16,7 @@
 #include "stm32mp25xxak-pinctrl.dtsi"
 
 /* USER CODE BEGIN includes */
+#include <dt-bindings/gpio/gpio.h>
 /* USER CODE END includes */
 
 / {
@@ -31,11 +32,64 @@
 	};
 
 	/* USER CODE BEGIN root */
+	aliases{
+		serial0 = &usart2;
+	};
+	
+	chosen{
+		stdout-path = "serial0:115200n8";
+		#address-cells = <2>;
+		#size-cells = <2>;
+		ranges;
+	};
+
+	config_adc_mipi_dsi_lcd_id {
+		st,adc_mipi_dsi_lcd_id = <&adc3 2>;
+	};
+
+	rgb_lcd_id_pinctrl {
+		gpior = <&gpiog 7 	GPIO_ACTIVE_LOW>;	//LCD_R7
+		gpiog = <&gpiog 13 	GPIO_ACTIVE_LOW>;	//LCD_G7
+		gpiob = <&gpioi 4 	GPIO_ACTIVE_LOW>;	//LCD_B7
+	};
+
+
+        vdd_5v: regulator-vdd-5v {
+                compatible = "regulator-fixed";
+                regulator-name = "vdd_5v";
+                regulator-min-microvolt = <5000000>;
+                regulator-max-microvolt = <5000000>;
+                regulator-always-on;
+                regulator-boot-on;
+        };
+	
+	vdda_1v8: regulator-vdda-1v8 {
+			compatible = "regulator-fixed";
+			regulator-name = "vdda_1v8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			regulator-boot-on;
+	};
+
+	vddref_1v8: regulator-vddref-1v8 {
+			compatible = "regulator-fixed";
+			regulator-name = "vddref_1v8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			regulator-boot-on;
+	};
 	/* USER CODE END root */
 
 	clocks{
 
 		/* USER CODE BEGIN clocks */
+		pad_clk: pad-clk {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <100000000>;
+		};
 		/* USER CODE END clocks */
 	};
 
@@ -463,6 +517,19 @@
 	status = "okay";
 
 	/* USER CODE BEGIN adc_3 */
+	vdda-supply = <&vdda_1v8>;
+	vref-supply = <&vddref_1v8>;
+
+	adc3: adc@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		channel@2 {
+			reg = <2>;               			/* ADC3 in2 channel is used */
+			st,min-sample-time-ns = <10000>;  	/* 10|¨¬s sampling time */
+		};
+	};
 	/* USER CODE END adc_3 */
 };
 
@@ -470,6 +537,9 @@
 	status = "okay";
 
 	/* USER CODE BEGIN combophy */
+	clocks = <&rcc CK_BUS_USB3PCIEPHY>, <&rcc CK_KER_USB3PCIEPHY>, <&pad_clk>;
+	clock-names = "apb-clk", "ker-clk", "pad-clk";
+	st,rx_equalizer = <1>;
 	/* USER CODE END combophy */
 };
 
@@ -477,6 +547,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN dsi */
+
 	/* USER CODE END dsi */
 };
 
@@ -487,6 +558,24 @@
 	status = "okay";
 
 	/* USER CODE BEGIN eth1 */
+	phy-mode = "rgmii-id";
+	phy-handle = <&phy1_eth1>;
+	st,eth-clk-sel;
+
+	mdio1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+		phy1_eth1: ethernet-phy@4 {
+ 			compatible = "ethernet-phy-id4f51.e91b",
+ 			 	     "ethernet-phy-ieee802.3-c22";
+			reset-gpios =  <&gpiof 3 GPIO_ACTIVE_LOW>;
+			reset-assert-us = <10000>;
+			reset-deassert-us = <80000>;
+			realtek,eee-disable;
+			reg = <4>;
+		};
+	};
 	/* USER CODE END eth1 */
 };
 
@@ -497,14 +586,24 @@
 	status = "okay";
 
 	/* USER CODE BEGIN eth2 */
+	phy-mode = "rgmii-id";
+	max-speed = <1000>;
+	phy-handle = <&phy1_eth2>;
+	st,eth-ptp-from-rcc;
+
+	mdio1 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		compatible = "snps,dwmac-mdio";
+		phy1_eth2: ethernet-phy@1 {
+			compatible = "ethernet-phy-id4f51.e91b";
+			reset-gpios =  <&gpiof 4 GPIO_ACTIVE_LOW>;
+			reset-assert-us = <10000>;
+			reset-deassert-us = <80000>;
+			reg = <1>;
+		};
+	};
 	/* USER CODE END eth2 */
-};
-
-&gpu {
-	status = "okay";
-
-	/* USER CODE BEGIN gpu */
-	/* USER CODE END gpu */
 };
 
 &hpdma {
@@ -535,14 +634,26 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c8 */
+	/delete-property/dmas;
+	/delete-property/dma-names;	
+
+    	goodix_ts@14 {
+		compatible = "alientek,mipi-ts";
+		reg = <0x14>;
+		interrupt-parent = <&gpiob>;
+		interrupts = <2 IRQ_TYPE_EDGE_RISING>;
+		irq-gpios = <&gpiob 2 GPIO_ACTIVE_HIGH>;
+		reset-gpios = <&gpiob 1 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+	};
 	/* USER CODE END i2c8 */
 };
 
-&m33_rproc {
+&ltdc {
 	status = "okay";
 
-	/* USER CODE BEGIN m33_rproc */
-	/* USER CODE END m33_rproc */
+	/* USER CODE BEGIN ltdc */
+	/* USER CODE END ltdc */
 };
 
 &pcie_rc {
@@ -564,6 +675,16 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc1 */
+	cd-gpios = <&gpioi 8 (GPIO_ACTIVE_LOW | GPIO_PULL_UP)>;
+	disable-wp;
+	st,neg-edge;
+	bus-width = <4>;
+	vmmc-supply = <&scmi_vdd_sdcard>;
+	vqmmc-supply = <&scmi_vddio1>;
+	sd-uhs-sdr12;
+	sd-uhs-sdr25;
+	sd-uhs-sdr50;
+	sd-uhs-ddr50;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -575,6 +696,14 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc2 */
+	non-removable;
+	no-sd;
+	no-sdio;
+	st,neg-edge;
+	bus-width = <8>;
+	vmmc-supply = <&scmi_vdd_emmc>;
+	vqmmc-supply = <&scmi_vddio2>;
+	mmc-ddr-1_8v;
 	/* USER CODE END sdmmc2 */
 };
 
@@ -586,6 +715,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usart2 */
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	/* USER CODE END usart2 */
 };
 
@@ -593,6 +724,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usb2_phy1 */
+	vdd33-supply = <&scmi_vdd3v3_usb>;
 	/* USER CODE END usb2_phy1 */
 };
 
@@ -600,6 +732,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usb2_phy2 */
+	vdd33-supply = <&scmi_vdd3v3_usb>;
 	/* USER CODE END usb2_phy2 */
 };
 
@@ -607,6 +740,9 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usb3dr */
+	dwc3: usb@48300000 {
+		maximum-speed = "high-speed";
+	};
 	/* USER CODE END usb3dr */
 };
 
@@ -614,6 +750,14 @@
 	status = "okay";
 
 	/* USER CODE BEGIN usbh */
+	usbh_ehci: usb@482f0000 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+	};
+
+	usbh_ohci: usb@482e0000 {
+		status = "disabled";
+	};
 	/* USER CODE END usbh */
 };
 
@@ -632,5 +776,35 @@
 };
 
 /* USER CODE BEGIN addons */
+&scmi_regu {
+	scmi_vddio1: regulator@0 {
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <3300000>;
+	};
+	scmi_vddcore: regulator@11  {
+		reg = <VOLTD_SCMI_STPMIC2_BUCK2>;
+		regulator-name = "vddcore";
+	};
+	scmi_v1v8: regulator@14  {
+		reg = <VOLTD_SCMI_STPMIC2_BUCK5>;
+		regulator-name = "v1v8";
+	};
+	scmi_v3v3: regulator@16 {
+		reg = <VOLTD_SCMI_STPMIC2_BUCK7>;
+		regulator-name = "v3v3";
+	};
+	scmi_vdd_emmc: regulator@18 {
+		reg = <VOLTD_SCMI_STPMIC2_LDO2>;
+		regulator-name = "vdd_emmc";
+	};
+	scmi_vdd3v3_usb: regulator@20 {
+		reg = <VOLTD_SCMI_STPMIC2_LDO4>;
+		regulator-name = "vdd3v3_usb";
+	};
+	scmi_vdd_sdcard: regulator@23 {
+		reg = <VOLTD_SCMI_STPMIC2_LDO7>;
+		regulator-name = "vdd_sdcard";
+	};
+};
 /* USER CODE END addons */
 

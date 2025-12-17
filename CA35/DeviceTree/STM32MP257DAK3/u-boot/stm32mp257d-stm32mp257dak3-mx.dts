@@ -532,7 +532,7 @@
 
 		channel@2 {
 			reg = <2>;               			/* ADC3 in2 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10¦Ìs sampling time */
+			st,min-sample-time-ns = <10000>;  	/* 10Â¦ÃŒs sampling time */
 		};
 	};
 	/* USER CODE END adc_3 */

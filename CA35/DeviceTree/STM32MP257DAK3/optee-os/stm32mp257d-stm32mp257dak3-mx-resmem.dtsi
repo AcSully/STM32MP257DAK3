@@ -73,11 +73,19 @@
 		};
 
 		cm33_retram: cm33-retram@a080000 {
-			reg = <0x0 0xa080000 0x0 0x20000>;
+			reg = <0x0 0xa080000 0x0 0x1f000>;
 			no-map;
 
 			/* USER CODE BEGIN cm33_retram */
 			/* USER CODE END cm33_retram */
+		};
+
+		ddr_param: ddr-param@a09f000 {
+			reg = <0x0 0xa09f000 0x0 0x1000>;
+			no-map;
+
+			/* USER CODE BEGIN ddr_param */
+			/* USER CODE END ddr_param */
 		};
 
 		test51: test51@a09f000 {
