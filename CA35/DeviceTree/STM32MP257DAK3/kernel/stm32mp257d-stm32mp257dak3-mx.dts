@@ -606,6 +606,13 @@
 	/* USER CODE END eth2 */
 };
 
+&gpu {
+	status = "okay";
+
+	/* USER CODE BEGIN gpu */
+	/* USER CODE END gpu */
+};
+
 &hpdma {
 	status = "okay";
 
@@ -654,6 +661,13 @@
 
 	/* USER CODE BEGIN ltdc */
 	/* USER CODE END ltdc */
+};
+
+&m33_rproc {
+	status = "okay";
+
+	/* USER CODE BEGIN m33_rproc */
+	/* USER CODE END m33_rproc */
 };
 
 &pcie_rc {

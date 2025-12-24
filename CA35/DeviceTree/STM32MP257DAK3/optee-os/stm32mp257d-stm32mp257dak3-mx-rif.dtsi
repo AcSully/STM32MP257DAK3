@@ -166,12 +166,12 @@
 
 &risaf2 {
 
-	memory-region = <&mm_ospi2>;
+	memory-region = <&mm_ospi1>;
 };
 
-&mm_ospi2 {
+&mm_ospi1 {
 
-	st,protreg = <RISAFPROT(RISAF_REG_ID(2), RIF_UNUSED, RIF_UNUSED, RIF_UNUSED, RIF_NSEC, RIF_ENC_DIS, RIF_BREN_EN)>;
+	st,protreg = <RISAFPROT(RISAF_REG_ID(1), RIF_UNUSED, RIF_UNUSED, RIF_UNUSED, RIF_NSEC, RIF_ENC_DIS, RIF_BREN_EN)>;
 };
 
 &ommanager {
@@ -284,10 +284,20 @@
 
 &risab2 {
 
-	memory-region = <&hpdma_lli>;
+	memory-region = <&hpdma1_lli>, <&hpdma2_lli>, <&hpdma3_lli>;
 };
 
-&hpdma_lli {
+&hpdma1_lli {
+
+	st,protreg = <RISABPROT(RIF_DDCID_DIS, RIF_UNUSED, RIF_NSEC, RIF_NPRIV, RIF_CFEN, RIF_CID1_BF, RIF_CID1_BF, RIF_CID1_BF)>;
+};
+
+&hpdma2_lli {
+
+	st,protreg = <RISABPROT(RIF_DDCID_DIS, RIF_UNUSED, RIF_NSEC, RIF_NPRIV, RIF_CFEN, RIF_CID1_BF, RIF_CID1_BF, RIF_CID1_BF)>;
+};
+
+&hpdma3_lli {
 
 	st,protreg = <RISABPROT(RIF_DDCID_DIS, RIF_UNUSED, RIF_NSEC, RIF_NPRIV, RIF_CFEN, RIF_CID1_BF, RIF_CID1_BF, RIF_CID1_BF)>;
 };
@@ -356,7 +366,7 @@
 
 &test51 {
 
-	st,protreg = <RISABPROT(RIF_DDCID_DIS, RIF_UNUSED, RIF_NSEC, RIF_NPRIV, RIF_CFDIS, RIF_UNUSED, RIF_UNUSED, RIF_UNUSED)>;
+	st,protreg = <RISABPROT(RIF_DDCID_DIS, RIF_UNUSED, RIF_NSEC, RIF_NPRIV, RIF_CFEN, RIF_CID1_BF, RIF_CID1_BF, RIF_CID1_BF)>;
 };
 
 &test52 {

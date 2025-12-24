@@ -24,12 +24,28 @@
 			/* USER CODE END tfa_bl31 */
 		};
 
-		hpdma_lli: hpdma-lli@a020000 {
-			reg = <0x0 0xa020000 0x0 0x20000>;
+		hpdma1_lli: hpdma1-lli@a020000 {
+			reg = <0x0 0xa020000 0x0 0xf0f0>;
 			no-map;
 
-			/* USER CODE BEGIN hpdma_lli */
-			/* USER CODE END hpdma_lli */
+			/* USER CODE BEGIN hpdma1_lli */
+			/* USER CODE END hpdma1_lli */
+		};
+
+		hpdma2_lli: hpdma2-lli@a02f0f0 {
+			reg = <0x0 0xa02f0f0 0x0 0xf0f0>;
+			no-map;
+
+			/* USER CODE BEGIN hpdma2_lli */
+			/* USER CODE END hpdma2_lli */
+		};
+
+		hpdma3_lli: hpdma3-lli@a03e1e0 {
+			reg = <0x0 0xa03e1e0 0x0 0x1e20>;
+			no-map;
+
+			/* USER CODE BEGIN hpdma3_lli */
+			/* USER CODE END hpdma3_lli */
 		};
 
 		bsec_mirror: bsec-mirror@a040000 {
@@ -120,12 +136,12 @@
 			/* USER CODE END tfm_its */
 		};
 
-		mm_ospi2: mm-ospi2@60000000 {
+		mm_ospi1: mm-ospi1@60000000 {
 			reg = <0x0 0x60000000 0x0 0x10000000>;
 			no-map;
 
-			/* USER CODE BEGIN mm_ospi2 */
-			/* USER CODE END mm_ospi2 */
+			/* USER CODE BEGIN mm_ospi1 */
+			/* USER CODE END mm_ospi1 */
 		};
 
 		tfm_code: tfm-code@80000000 {
@@ -169,7 +185,7 @@
 		};
 
 		spare1: spare1@81300000 {
-			reg = <0x0 0x81300000 0x0 0xCC0000>;
+			reg = <0x0 0x81300000 0x0 0xcc0000>;
 			no-map;
 
 			/* USER CODE BEGIN spare1 */
