@@ -17,6 +17,7 @@
 
 /* USER CODE BEGIN includes */
 #include <dt-bindings/gpio/gpio.h>
+#include <dt-bindings/usb/pd.h>
 /* USER CODE END includes */
 
 / {
@@ -310,6 +311,23 @@
 		};
 	};
 
+	i2c4_pins_mx: i2c4_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 10, AF6)>, /* I2C4_SDA */
+					 <STM32_PINMUX('D', 11, AF6)>; /* I2C4_SCL */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c4_sleep_pins_mx: i2c4_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 10, ANALOG)>, /* I2C4_SDA */
+					 <STM32_PINMUX('D', 11, ANALOG)>; /* I2C4_SCL */
+		};
+	};
+
 	pcie_pins_mx: pcie_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 8, AF4)>; /* PCIE_CLKREQN */
@@ -527,7 +545,7 @@
 
 		channel@2 {
 			reg = <2>;               			/* ADC3 in2 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10|¨¬s sampling time */
+			st,min-sample-time-ns = <10000>;  	/* 10us sampling time */
 		};
 	};
 	/* USER CODE END adc_3 */
@@ -551,6 +569,7 @@
 	/* USER CODE END dsi */
 };
 
+#if 0
 &eth1 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&eth1_mdio_pins_mx>, <&eth1_rgmii_pins_mx>;
@@ -578,6 +597,7 @@
 	};
 	/* USER CODE END eth1 */
 };
+#endif
 
 &eth2 {
 	pinctrl-names = "default", "sleep";
@@ -632,6 +652,45 @@
 
 	/* USER CODE BEGIN hpdma3 */
 	/* USER CODE END hpdma3 */
+};
+
+&i2c4 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c4_pins_mx>;
+	pinctrl-1 = <&i2c4_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN i2c4 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+
+	fusb302@22 {
+		compatible = "fcs,fusb302","fairchild,fusb302";
+		reg = <0x22>;
+		int-n-gpios = <&gpioz 6 GPIO_ACTIVE_HIGH>;
+		vbus-5v-gpios = <&gpioz 5 GPIO_ACTIVE_HIGH>;
+		status = "okay";
+
+		connector {
+			compatible = "usb-c-connector";
+			label = "USB-C";
+			power-role = "dual";
+			power-opmode = "default";
+			try-power-role = "sink";
+			source-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)>;
+			sink-pdos = <PDO_FIXED(5000, 3000, PDO_FIXED_USB_COMM)
+			PDO_VAR(3000, 12000, 3000)
+			PDO_PPS_APDO(3000, 11000, 3000)>;
+			op-sink-microwatt = <10000000>;
+			
+			port {
+				con_usbotg_hs_ep: endpoint {
+				remote-endpoint = <&usbotg_hs_ep>;
+				};
+			};
+		};
+	};
+	/* USER CODE END i2c4 */
 };
 
 &i2c8 {
@@ -756,6 +815,13 @@
 	/* USER CODE BEGIN usb3dr */
 	dwc3: usb@48300000 {
 		maximum-speed = "high-speed";
+        	usb-role-switch;
+
+		port {
+			usbotg_hs_ep: endpoint {
+				remote-endpoint = <&con_usbotg_hs_ep>;
+			};
+		};
 	};
 	/* USER CODE END usb3dr */
 };

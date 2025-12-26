@@ -317,6 +317,23 @@
 		};
 	};
 
+	i2c4_pins_mx: i2c4_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 10, AF6)>, /* I2C4_SDA */
+					 <STM32_PINMUX('D', 11, AF6)>; /* I2C4_SCL */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c4_sleep_pins_mx: i2c4_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 10, ANALOG)>, /* I2C4_SDA */
+					 <STM32_PINMUX('D', 11, ANALOG)>; /* I2C4_SCL */
+		};
+	};
+
 	pcie_pins_mx: pcie_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 8, AF4)>; /* PCIE_CLKREQN */
@@ -532,7 +549,7 @@
 
 		channel@2 {
 			reg = <2>;               			/* ADC3 in2 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10¦Ìs sampling time */
+			st,min-sample-time-ns = <10000>;  	/* 10us sampling time */
 		};
 	};
 	/* USER CODE END adc_3 */
@@ -665,6 +682,19 @@
 
 	/* USER CODE BEGIN hpdma3 */
 	/* USER CODE END hpdma3 */
+};
+
+&i2c4 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c4_pins_mx>;
+	pinctrl-1 = <&i2c4_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN i2c4 */
+	/* spare dmas for other usage */
+	/delete-property/dmas;
+	/delete-property/dma-names;	
+	/* USER CODE END i2c4 */
 };
 
 &i2c8 {

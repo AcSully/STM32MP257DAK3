@@ -24,28 +24,12 @@
 			/* USER CODE END tfa_bl31 */
 		};
 
-		hpdma1_lli: hpdma1-lli@a020000 {
-			reg = <0x0 0xa020000 0x0 0xf0f0>;
+		hpdma_lli: hpdma-lli@a020000 {
+			reg = <0x0 0xa020000 0x0 0x20000>;
 			no-map;
 
-			/* USER CODE BEGIN hpdma1_lli */
-			/* USER CODE END hpdma1_lli */
-		};
-
-		hpdma2_lli: hpdma2-lli@a02f0f0 {
-			reg = <0x0 0xa02f0f0 0x0 0xf0f0>;
-			no-map;
-
-			/* USER CODE BEGIN hpdma2_lli */
-			/* USER CODE END hpdma2_lli */
-		};
-
-		hpdma3_lli: hpdma3-lli@a03e1e0 {
-			reg = <0x0 0xa03e1e0 0x0 0x1e20>;
-			no-map;
-
-			/* USER CODE BEGIN hpdma3_lli */
-			/* USER CODE END hpdma3_lli */
+			/* USER CODE BEGIN hpdma_lli */
+			/* USER CODE END hpdma_lli */
 		};
 
 		bsec_mirror: bsec-mirror@a040000 {
