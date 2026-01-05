@@ -608,6 +608,13 @@
 	/* USER CODE END dsi */
 };
 
+&dts {
+	status = "okay";
+
+	/* USER CODE BEGIN dts */
+	/* USER CODE END dts */
+};
+
 &eth1 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&eth1_mdio_pins_mx>, <&eth1_rgmii_pins_mx>;

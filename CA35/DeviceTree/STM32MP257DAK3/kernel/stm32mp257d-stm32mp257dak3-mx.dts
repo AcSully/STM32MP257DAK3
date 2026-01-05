@@ -678,6 +678,13 @@
 	/* USER CODE END dsi */
 };
 
+&dts {
+	status = "okay";
+
+	/* USER CODE BEGIN dts */
+	/* USER CODE END dts */
+};
+
 &eth1 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&eth1_mdio_pins_mx>, <&eth1_rgmii_pins_mx>;
@@ -855,6 +862,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN pcie_rc */
+	reset-gpios = <&gpiob 12 GPIO_ACTIVE_LOW>;
 	/* USER CODE END pcie_rc */
 };
 
@@ -1048,6 +1056,14 @@
 
 &dsi_out {
 	remote-endpoint = <&dsi_panel_in>;
+};
+
+&pcie_ep {
+	pinctrl-names = "default", "init";
+	pinctrl-0 = <&pcie_pins_mx>;
+	pinctrl-1 = <&pcie_init_pins_mx>;
+	reset-gpios = <&gpiob 12 GPIO_ACTIVE_LOW>;
+	status = "disabled";
 };
 /* USER CODE END addons */
 
