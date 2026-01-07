@@ -168,6 +168,18 @@
 		};
 	};
 
+	adc_12_pins_mx: adc_12_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 15, ANALOG)>; /* ADC1_INP15 */
+		};
+	};
+
+	adc_12_sleep_pins_mx: adc_12_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 15, ANALOG)>; /* ADC1_INP15 */
+		};
+	};
+
 	eth1_mdio_pins_mx: eth1_mdio_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('F', 0, AF10)>; /* ETH1_MDC */
@@ -601,6 +613,29 @@
 	/* USER CODE END pinctrl_z */
 };
 
+&adc_12 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&adc_12_pins_mx>;
+	pinctrl-1 = <&adc_12_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN adc_12 */
+	vdda-supply = <&scmi_v1v8>;
+	vref-supply = <&scmi_v1v8>;
+
+	adc1: adc@0 {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		channel@15 {
+			reg = <15>;               			/* ADC1 in15 channel is used */
+			st,min-sample-time-ns = <10000>;  	/* 10¦Ìs sampling time */
+		};
+	};
+	/* USER CODE END adc_12 */
+};
+
 &adc_3 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&adc3_pins_mx>;
@@ -608,19 +643,8 @@
 	status = "okay";
 
 	/* USER CODE BEGIN adc_3 */
-	vdda-supply = <&vdda_1v8>;
-	vref-supply = <&vddref_1v8>;
-
-	adc3: adc@0 {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		status = "okay";
-
-		channel@2 {
-			reg = <2>;               			/* ADC3 in2 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10us sampling time */
-		};
-	};
+	vdda-supply = <&scmi_v1v8>;
+	vref-supply = <&scmi_v1v8>;
 	/* USER CODE END adc_3 */
 };
 
@@ -744,6 +768,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN gpu */
+	contiguous-area = <&gpu_reserved>;
 	/* USER CODE END gpu */
 };
 
@@ -751,6 +776,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN hpdma */
+	memory-region = <&hpdma1_lli>;
 	/* USER CODE END hpdma */
 };
 
@@ -758,6 +784,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN hpdma2 */
+	memory-region = <&hpdma2_lli>;
 	/* USER CODE END hpdma2 */
 };
 
@@ -765,6 +792,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN hpdma3 */
+	memory-region = <&hpdma3_lli>;
 	/* USER CODE END hpdma3 */
 };
 
