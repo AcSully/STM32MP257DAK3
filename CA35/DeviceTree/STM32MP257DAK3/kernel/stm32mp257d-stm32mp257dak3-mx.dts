@@ -846,7 +846,7 @@
 	/delete-property/dma-names;	
 
     	goodix_ts@14 {
-		compatible = "alientek,mipi-ts";
+		compatible = "goodix,gt9271", "goodix,gt911";
 		reg = <0x14>;
 		interrupt-parent = <&gpiob>;
 		interrupts = <2 IRQ_TYPE_EDGE_RISING>;
