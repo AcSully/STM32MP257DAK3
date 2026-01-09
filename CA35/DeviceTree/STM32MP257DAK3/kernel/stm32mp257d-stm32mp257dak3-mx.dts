@@ -18,6 +18,8 @@
 /* USER CODE BEGIN includes */
 #include <dt-bindings/gpio/gpio.h>
 #include <dt-bindings/usb/pd.h>
+#include <dt-bindings/input/input.h>
+#include <dt-bindings/leds/common.h>
 #include "stm32mp25-pinctrl.dtsi"
 /* USER CODE END includes */
 
@@ -135,9 +137,40 @@
 					230 231 232 233 234 235 236 237 238 239
                     240 241 242 243 244 245 246 247 248 249
 					250 251 252 253 254 255>;
-        power-supply = <&vdd_3v3>;
-        default-brightness-level = <255>;
-        status = "okay";
+	        power-supply = <&vdd_3v3>;
+	        default-brightness-level = <255>;
+	        status = "okay";
+	};
+
+	gpio-keys {
+		compatible = "gpio-keys";
+
+		button-user-1 {
+			label = "User-1";
+			linux,code = <BTN_1>;
+			gpios = <&gpioh 5 GPIO_ACTIVE_HIGH>;
+			status = "okay";
+		};
+
+		button-wake-up {
+			label = "wake-up";
+			linux,code = <KEY_WAKEUP>;
+			interrupts-extended = <&optee 0>;
+			wakeup-source;
+			status = "okay";
+		};
+	};
+
+	gpio-leds {
+		compatible = "gpio-leds";
+
+		led {
+			function = LED_FUNCTION_HEARTBEAT;
+			color = <LED_COLOR_ID_BLUE>;
+			gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
+			linux,default-trigger = "heartbeat";
+			default-state = "off";
+		};
 	};
 	/* USER CODE END root */
 
@@ -879,6 +912,13 @@
 	status = "okay";
 
 	/* USER CODE BEGIN m33_rproc */
+	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
+	mbox-names = "vq0", "vq1", "shutdown";
+	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>,
+			<&ipc_shmem>, <&vdev0vring0>,
+			<&vdev0vring1>, <&vdev0buffer>,
+			<&cm33_sram2>;
+	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
 	/* USER CODE END m33_rproc */
 };
 
@@ -1092,6 +1132,71 @@
 	pinctrl-1 = <&pcie_init_pins_mx>;
 	reset-gpios = <&gpiob 12 GPIO_ACTIVE_LOW>;
 	status = "disabled";
+};
+
+&m0_rproc {
+	memory-region = <&cm0_cube_fw>, <&cm0_cube_data>;
+	clocks = <&rcc CK_CPU3>,
+		 <&rcc CK_CPU3_AM>,
+		 <&rcc CK_LPUART1_C3>,
+		 <&rcc CK_KER_LPUART1>,
+		 <&rcc CK_LPUART1_AM>,
+		 <&rcc CK_GPIOZ_C3>,
+		 <&scmi_clk CK_SCMI_GPIOZ>,
+		 <&scmi_clk CK_SCMI_GPIOZ_AM>,
+		 <&rcc CK_LPTIM4_C3>,
+		 <&rcc CK_KER_LPTIM4>,
+		 <&rcc CK_LPTIM4_AM>,
+		 <&scmi_clk CK_SCMI_IPCC2>,
+		 <&scmi_clk CK_SCMI_IPCC2_AM>;
+	status = "okay";
+};
+
+&ahbsr {
+	mbox_client: mailbox-client@1 {
+		compatible = "mbox-cdev";
+		reg = <1 0>;
+		memory-region =  <&ipc_shmem_2>;
+		mboxes = <&ipcc2 0>;
+		mbox-names = "rx-tx";
+		status = "okay";
+	};
+};
+
+&mlahb {
+	intc_rpmsg: interrupt-controller@1 {
+		compatible = "rpmsg,intc";
+		reg = <1 0>;
+		#interrupt-cells = <1>;
+		interrupt-controller;
+		status = "okay";
+	};
+
+	i2c_rpmsg: i2c@2 {
+		compatible = "rpmsg,i2c-controller";
+		reg = <2 0>;
+		rpmsg,dev-id = "rpmsg_i2c";
+		#address-cells = <1>;
+		#size-cells = <0>;
+		status = "okay";
+
+		typec@35 {
+			compatible = "st,stm32mp25-typec";
+			reg = <0x35>;
+			interrupts-extended = <&intc_rpmsg 0>;
+			status = "okay";
+			connector {
+				compatible = "usb-c-connector";
+				label = "USB-C";
+
+				port {
+					typec_ep: endpoint {
+						//remote-endpoint = <&dwc3_ep>;
+					};
+				};
+			};
+		};
+	};
 };
 /* USER CODE END addons */
 
