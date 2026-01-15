@@ -890,6 +890,13 @@
 	/* USER CODE END i2c8 */
 };
 
+&ipcc1 {
+	status = "okay";
+
+	/* USER CODE BEGIN ipcc1 */
+	/* USER CODE END ipcc1 */
+};
+
 &ltdc {
 	status = "okay";
 
@@ -910,6 +917,8 @@
 
 &m33_rproc {
 	status = "okay";
+
+	/*Restriction: "memory-region" property is not managed - please to use User-Section if needed*/
 
 	/* USER CODE BEGIN m33_rproc */
 	mboxes = <&ipcc1 0x100>, <&ipcc1 0x101>, <&ipcc1 2>;
@@ -1149,7 +1158,7 @@
 		 <&rcc CK_LPTIM4_AM>,
 		 <&scmi_clk CK_SCMI_IPCC2>,
 		 <&scmi_clk CK_SCMI_IPCC2_AM>;
-	status = "okay";
+	status = "disable";
 };
 
 &ahbsr {

@@ -41,6 +41,8 @@
 
 /* Private variables ---------------------------------------------------------*/
 
+IPCC_HandleTypeDef hipcc1;
+
 UART_HandleTypeDef huart4;
 
 /* USER CODE BEGIN PV */
@@ -51,6 +53,7 @@ UART_HandleTypeDef huart4;
 void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
+static void MX_IPCC1_Init(void);
 static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -83,6 +86,9 @@ int main(void)
 
   /* Configure the system clock */
   SystemClock_Config();
+
+  /* IPCC initialisation */
+  MX_IPCC1_Init();
 
   /* USER CODE BEGIN SysInit */
 
@@ -133,6 +139,32 @@ static void MX_ICACHE_Init(void)
   /* USER CODE BEGIN ICACHE_Init 2 */
 
   /* USER CODE END ICACHE_Init 2 */
+
+}
+
+/**
+  * @brief IPCC1 Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_IPCC1_Init(void)
+{
+
+  /* USER CODE BEGIN IPCC1_Init 0 */
+
+  /* USER CODE END IPCC1_Init 0 */
+
+  /* USER CODE BEGIN IPCC1_Init 1 */
+
+  /* USER CODE END IPCC1_Init 1 */
+  hipcc1.Instance = IPCC1;
+  if (HAL_IPCC_Init(&hipcc1) != HAL_OK)
+  {
+    Error_Handler();
+  }
+  /* USER CODE BEGIN IPCC1_Init 2 */
+
+  /* USER CODE END IPCC1_Init 2 */
 
 }
 
@@ -191,11 +223,19 @@ static void MX_UART4_Init(void)
   */
 static void MX_GPIO_Init(void)
 {
+  GPIO_InitTypeDef GPIO_InitStruct = {0};
   /* USER CODE BEGIN MX_GPIO_Init_1 */
 
   /* USER CODE END MX_GPIO_Init_1 */
 
   /* GPIO Ports Clock Enable */
+
+  /*Configure GPIO pin : GPIO_TEST_Pin */
+  GPIO_InitStruct.Pin = GPIO_TEST_Pin;
+  GPIO_InitStruct.Mode = GPIO_MODE_OUTPUT_PP;
+  GPIO_InitStruct.Pull = GPIO_NOPULL;
+  GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_LOW;
+  HAL_GPIO_Init(GPIO_TEST_GPIO_Port, &GPIO_InitStruct);
 
   /* USER CODE BEGIN MX_GPIO_Init_2 */
 
