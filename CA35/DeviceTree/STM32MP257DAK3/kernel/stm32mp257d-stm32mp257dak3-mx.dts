@@ -70,43 +70,6 @@
 		gpiob = <&gpioi 4 	GPIO_ACTIVE_LOW>;	//LCD_B7
 	};
 
-
-        vdd_5v: regulator-vdd-5v {
-                compatible = "regulator-fixed";
-                regulator-name = "vdd_5v";
-                regulator-min-microvolt = <5000000>;
-                regulator-max-microvolt = <5000000>;
-                regulator-always-on;
-                regulator-boot-on;
-        };
-	
-	vdda_1v8: regulator-vdda-1v8 {
-			compatible = "regulator-fixed";
-			regulator-name = "vdda_1v8";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-always-on;
-			regulator-boot-on;
-	};
-
-	vddref_1v8: regulator-vddref-1v8 {
-			compatible = "regulator-fixed";
-			regulator-name = "vddref_1v8";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-always-on;
-			regulator-boot-on;
-	};
-	
-	vdd_3v3: regulator-vdd-3v3 {
-		compatible = "regulator-fixed";
-		regulator-name = "vdd_3v3";
-		regulator-min-microvolt = <3300000>;
-		regulator-max-microvolt = <3300000>;
-		regulator-always-on;
-		regulator-boot-on;
-	};
-
 	panel_dsi_backlight: panel-dsi-backlight {
         compatible = "pwm-backlight";
         pwms = <&pwm16 0 5000000 0>;
@@ -172,11 +135,77 @@
 			default-state = "off";
 		};
 	};
+
+	vdd_5v: regulator-vdd-5v {
+			compatible = "regulator-fixed";
+			regulator-name = "vdd_5v";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			regulator-always-on;
+			regulator-boot-on;
+	};
+	
+	vdda_1v8: regulator-vdda-1v8 {
+			compatible = "regulator-fixed";
+			regulator-name = "vdda_1v8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			regulator-boot-on;
+	};
+
+	vddref_1v8: regulator-vddref-1v8 {
+			compatible = "regulator-fixed";
+			regulator-name = "vddref_1v8";
+			regulator-min-microvolt = <1800000>;
+			regulator-max-microvolt = <1800000>;
+			regulator-always-on;
+			regulator-boot-on;
+	};
+	
+	vdd_3v3: regulator-vdd-3v3 {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_3v3";
+		regulator-min-microvolt = <3300000>;
+		regulator-max-microvolt = <3300000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
+
+	imx335_2v9: imx335-2v9 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx335-avdd";
+		regulator-min-microvolt = <2900000>;
+		regulator-max-microvolt = <2900000>;
+		regulator-always-on;
+	};
+
+	imx335_1v8: imx335-1v8 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx335-ovdd";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-always-on;
+	};
+
+	imx335_1v2: imx335-1v2 {
+		compatible = "regulator-fixed";
+		regulator-name = "imx335-dvdd";
+		regulator-min-microvolt = <1200000>;
+		regulator-max-microvolt = <1200000>;
+		regulator-always-on;
+	};
 	/* USER CODE END root */
 
 	clocks{
 
 		/* USER CODE BEGIN clocks */
+		clk_ext_camera: clk-ext-camera {
+			#clock-cells = <0>;
+			compatible = "fixed-clock";
+			clock-frequency = <24000000>;
+		};
+
 		pad_clk: pad-clk {
 			#clock-cells = <0>;
 			compatible = "fixed-clock";
@@ -691,6 +720,47 @@
 	/* USER CODE END combophy */
 };
 
+&csi {
+	status = "okay";
+
+	/* USER CODE BEGIN csi */
+	vdd-supply =  <&scmi_vddcore>;
+	vdda18-supply = <&scmi_v1v8>;
+
+	ports {
+		#address-cells = <1>;
+		#size-cells = <0>;
+		port@0 {
+			reg = <0>;
+			csi_sink: endpoint {
+				remote-endpoint = <&imx335_ep>;
+				data-lanes = <1 2>;
+				bus-type = <4>;
+			};
+		};
+		port@1 {
+			reg = <1>;
+			csi_source: endpoint {
+				remote-endpoint = <&dcmipp_0>;
+			};
+		};
+	};
+	/* USER CODE END csi */
+};
+
+&dcmipp {
+	status = "okay";
+
+	/* USER CODE BEGIN dcmipp */
+	port {
+		dcmipp_0: endpoint {
+			remote-endpoint = <&csi_source>;
+			bus-type = <4>;
+		};
+	};
+	/* USER CODE END dcmipp */
+};
+
 &dsi {
 	status = "okay";
 
@@ -836,6 +906,10 @@
 	status = "okay";
 
 	/* USER CODE BEGIN i2c4 */
+	i2c-scl-rising-time-ns = <100>;
+	i2c-scl-falling-time-ns = <13>;
+	clock-frequency = <400000>;
+	/* spare dmas for other usage */
 	/delete-property/dmas;
 	/delete-property/dma-names;
 
@@ -865,6 +939,27 @@
 			};
 		};
 	};
+
+	imx335: imx335@1a {
+		compatible = "sony,imx335";
+		reg = <0x1a>;
+		clocks = <&clk_ext_camera>;
+		avdd-supply = <&scmi_v3v3>;
+		ovdd-supply = <&scmi_v3v3>;
+		dvdd-supply = <&scmi_v3v3>;        
+		reset-gpios = <&gpiog 4 (GPIO_ACTIVE_LOW | GPIO_PUSH_PULL)>;
+		powerdown-gpios = <&gpiog 3 (GPIO_ACTIVE_HIGH | GPIO_PUSH_PULL)>;
+		status = "okay";
+
+		port {
+			imx335_ep: endpoint {
+				remote-endpoint = <&csi_sink>;
+				clock-lanes = <0>;
+				data-lanes = <1 2>;
+				link-frequencies = /bits/ 64 <594000000>;
+			};
+		};
+	};
 	/* USER CODE END i2c4 */
 };
 
@@ -878,7 +973,7 @@
 	/delete-property/dmas;
 	/delete-property/dma-names;	
 
-    	goodix_ts@14 {
+	goodix_ts@14 {
 		compatible = "goodix,gt9271", "goodix,gt911";
 		reg = <0x14>;
 		interrupt-parent = <&gpiob>;
