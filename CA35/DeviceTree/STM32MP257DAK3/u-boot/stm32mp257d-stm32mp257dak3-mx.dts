@@ -194,6 +194,9 @@
 			st,io-delay-path = <0>;
 			st,io-delay = <0>;
 		};
+		pins5 {
+			pinmux = <STM32_PINMUX('H', 9, AF10)>; /* ETH1_RGMII_CLK125 */
+		};
 	};
 
 	eth1_rgmii_sleep_pins_mx: eth1_rgmii_sleep_mx-0 {
@@ -206,6 +209,7 @@
 					 <STM32_PINMUX('C', 1, ANALOG)>, /* ETH1_RGMII_TXD1 */
 					 <STM32_PINMUX('C', 2, ANALOG)>, /* ETH1_RGMII_RXD1 */
 					 <STM32_PINMUX('F', 1, ANALOG)>, /* ETH1_RGMII_RXD0 */
+					 <STM32_PINMUX('H', 9, ANALOG)>, /* ETH1_RGMII_CLK125 */
 					 <STM32_PINMUX('H', 10, ANALOG)>, /* ETH1_RGMII_TXD2 */
 					 <STM32_PINMUX('H', 11, ANALOG)>, /* ETH1_RGMII_TXD3 */
 					 <STM32_PINMUX('H', 12, ANALOG)>, /* ETH1_RGMII_RXD2 */
