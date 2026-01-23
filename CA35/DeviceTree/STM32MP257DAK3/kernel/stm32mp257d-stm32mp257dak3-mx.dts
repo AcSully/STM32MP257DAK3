@@ -40,6 +40,8 @@
 		ethernet0 = &eth2;
 		ethernet1 = &eth1;
 		serial0 = &usart2;
+		serial1 = &usart1;
+		serial2 = &uart7;
 	};
 	
 	chosen{
@@ -781,6 +783,38 @@
 		};
 	};
 
+	usart1_pins_mx: usart1_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('G', 14, AF6)>; /* USART1_TX */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('G', 15, AF6)>; /* USART1_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+	};
+
+	usart1_idle_pins_mx: usart1_idle_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('G', 14, ANALOG)>; /* USART1_TX */
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('G', 15, AF6)>; /* USART1_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+	};
+
+	usart1_sleep_pins_mx: usart1_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('G', 14, ANALOG)>, /* USART1_TX */
+					 <STM32_PINMUX('G', 15, ANALOG)>; /* USART1_RX */
+		};
+	};
+
 	usart2_pins_mx: usart2_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('A', 4, AF6)>; /* USART2_TX */
@@ -1254,7 +1288,7 @@
 	pinctrl-0 = <&pcie_pins_mx>;
 	pinctrl-1 = <&pcie_init_pins_mx>;
 	pinctrl-2 = <&pcie_sleep_pins_mx>;
-	status = "okay";
+	status = "disabled";
 
 	/* USER CODE BEGIN pcie_rc */
 	reset-gpios = <&gpiob 12 GPIO_ACTIVE_LOW>;
@@ -1386,13 +1420,21 @@
 	status = "okay";
 
 	/* USER CODE BEGIN uart7 */
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	/* USER CODE END uart7 */
 };
 
 &usart1 {
+	pinctrl-names = "default", "idle", "sleep";
+	pinctrl-0 = <&usart1_pins_mx>;
+	pinctrl-1 = <&usart1_idle_pins_mx>;
+	pinctrl-2 = <&usart1_sleep_pins_mx>;
 	status = "okay";
 
 	/* USER CODE BEGIN usart1 */
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
 	/* USER CODE END usart1 */
 };
 
