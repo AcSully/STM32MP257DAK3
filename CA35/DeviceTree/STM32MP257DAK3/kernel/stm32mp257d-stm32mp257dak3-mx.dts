@@ -138,6 +138,27 @@
 		};
 	};
 
+	sound {
+		compatible = "audio-graph-card";
+		label = "es8388-audio";
+			dais = <&sai1a_port &sai1b_port>;
+			widgets = 
+				"Headphone", "Headphone Jack",
+				"Speaker", "Ext Spk",
+				"Microphone", "Mic Jack";
+		routing =
+				"Playback", "MCLK",
+			"Capture", "MCLK",
+		    "Headphone Jack", "LOUT1",
+		    "Headphone Jack", "ROUT1",
+		    "Ext Spk", "LOUT2",
+		    "Ext Spk", "ROUT2",
+		    "LINPUT1", "Mic Jack",
+		    "LINPUT2", "Mic Jack",
+		    "RINPUT2", "Mic Jack",
+		    "Mic Jack", "Mic Bias";
+	};
+
 	vdd_5v: regulator-vdd-5v {
 			compatible = "regulator-fixed";
 			regulator-name = "vdd_5v";
@@ -512,6 +533,23 @@
 		};
 	};
 
+	i2c3_pins_mx: i2c3_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('G', 1, AF9)>, /* I2C3_SCL */
+					 <STM32_PINMUX('G', 2, AF9)>; /* I2C3_SDA */
+			bias-disable;
+			drive-open-drain;
+			slew-rate = <0>;
+		};
+	};
+
+	i2c3_sleep_pins_mx: i2c3_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('G', 1, ANALOG)>, /* I2C3_SCL */
+					 <STM32_PINMUX('G', 2, ANALOG)>; /* I2C3_SDA */
+		};
+	};
+
 	i2c4_pins_mx: i2c4_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('D', 10, AF6)>, /* I2C4_SDA */
@@ -733,21 +771,6 @@
 	tim20_pwm_sleep_pins_mx: tim20_pwm_sleep_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 3, ANALOG)>; /* TIM20_CH3 */
-		};
-	};
-
-	tim4_pwm_pins_mx: tim4_pwm_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('D', 13, AF9)>; /* TIM4_CH4 */
-			bias-disable;
-			drive-push-pull;
-			slew-rate = <0>;
-		};
-	};
-
-	tim4_pwm_sleep_pins_mx: tim4_pwm_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('D', 13, ANALOG)>; /* TIM4_CH4 */
 		};
 	};
 
@@ -1120,9 +1143,20 @@
 };
 
 &i2c3 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&i2c3_pins_mx>;
+	pinctrl-1 = <&i2c3_sleep_pins_mx>;
 	status = "okay";
 
 	/* USER CODE BEGIN i2c3 */
+	/delete-property/dmas;
+	/delete-property/dma-names;
+
+	pcf8563@51 {
+		compatible = "nxp,pcf8563";
+		reg = <0x51>;
+		status = "okay";
+	};
 	/* USER CODE END i2c3 */
 };
 
@@ -1184,6 +1218,40 @@
 				clock-lanes = <0>;
 				data-lanes = <1 2>;
 				link-frequencies = /bits/ 64 <594000000>;
+			};
+		};
+	};
+
+	es8388: es8388@11 {
+		compatible = "alientek,es8388";
+		reg = <0x11>;
+		#sound-dai-cells = <0>;
+		spk-con = <&gpiod 12 GPIO_ACTIVE_LOW>;
+		hp-det = <&gpiod 13 GPIO_ACTIVE_LOW>;
+		clocks = <&sai1b>;
+		clock-names = "MCLK";
+		DVDD-supply = <&vdd_3v3>;
+		PVDD-supply = <&vdd_3v3>;
+		AVDD-supply = <&vdd_3v3>;
+		HPVDD-supply = <&vdd_3v3>;
+		status = "okay";
+
+		port {
+			#address-cells = <1>;
+			#size-cells = <0>;
+
+			es8388_tx_endpoint: endpoint@0 {
+				reg = <0>;
+				remote-endpoint = <&sai1b_endpoint>;
+				frame-master;
+				bitclock-master;
+			};
+
+			es8388_rx_endpoint: endpoint@1 {
+				reg = <1>;
+				remote-endpoint = <&sai1a_endpoint>;
+				frame-master;
+				bitclock-master;
 			};
 		};
 	};
@@ -1369,6 +1437,13 @@
 	/* USER CODE END spi8 */
 };
 
+&timers1 {
+	status = "okay";
+
+	/* USER CODE BEGIN timers1 */
+	/* USER CODE END timers1 */
+};
+
 &timers16 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&tim16_pwm_pins_mx>;
@@ -1385,13 +1460,6 @@
 	/* USER CODE END timers16 */
 };
 
-&timers17 {
-	status = "okay";
-
-	/* USER CODE BEGIN timers17 */
-	/* USER CODE END timers17 */
-};
-
 &timers20 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&tim20_pwm_pins_mx>;
@@ -1400,16 +1468,6 @@
 
 	/* USER CODE BEGIN timers20 */
 	/* USER CODE END timers20 */
-};
-
-&timers4 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&tim4_pwm_pins_mx>;
-	pinctrl-1 = <&tim4_pwm_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN timers4 */
-	/* USER CODE END timers4 */
 };
 
 &uart7 {
@@ -1644,6 +1702,52 @@
 				};
 			};
 		};
+	};
+};
+
+&sai1 {
+	clocks = <&rcc CK_BUS_SAI1>;
+	clock-names = "pclk";
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&sai1a_pins_mx>, <&sai1b_pins_mx>;
+	pinctrl-1 = <&sai1a_sleep_pins_mx>, <&sai1b_sleep_pins_mx>;
+	status = "okay";
+
+	sai1a: audio-controller@40290004 {
+		dma-names = "rx";
+		clocks = <&rcc CK_KER_SAI1>, <&sai1b>;
+		clock-names = "sai_ck", "MCLK";
+		dmas = <&hpdma 73 0x43 0x12>;
+		st,sync = <&sai1b 2>;
+		status = "okay";
+
+		sai1a_port: port {
+			sai1a_endpoint: endpoint {
+				remote-endpoint = <&es8388_rx_endpoint>;
+				dai-format = "i2s";
+				mclk-fs = <256>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+			};
+		};
+ 	};
+
+	sai1b: audio-controller@40290024 {
+		#clock-cells = <0>;
+		dma-names = "tx";
+		clock-names = "sai_ck";
+		dmas = <&hpdma 74 0x43 0x21>;
+		status = "okay";
+
+		sai1b_port: port {
+			sai1b_endpoint: endpoint {
+				remote-endpoint = <&es8388_tx_endpoint>;
+				dai-format = "i2s";
+				mclk-fs = <256>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+ 			};
+ 		};		
 	};
 };
 /* USER CODE END addons */
