@@ -147,8 +147,8 @@
 				"Speaker", "Ext Spk",
 				"Microphone", "Mic Jack";
 		routing =
-				"Playback", "MCLK",
-			"Capture", "MCLK",
+            "Playback", "MCLK",
+            "Capture", "MCLK",
 		    "Headphone Jack", "LOUT1",
 		    "Headphone Jack", "ROUT1",
 		    "Ext Spk", "LOUT2",
@@ -1226,8 +1226,8 @@
 		compatible = "alientek,es8388";
 		reg = <0x11>;
 		#sound-dai-cells = <0>;
-		spk-con = <&gpiod 12 GPIO_ACTIVE_LOW>;
-		hp-det = <&gpiod 13 GPIO_ACTIVE_LOW>;
+		spk-con-gpios = <&gpiod 12 GPIO_ACTIVE_LOW>;
+		hp-det-gpios = <&gpiod 13 GPIO_ACTIVE_LOW>;
 		clocks = <&sai1b>;
 		clock-names = "MCLK";
 		DVDD-supply = <&vdd_3v3>;
