@@ -29,7 +29,7 @@
 
 	memory@80000000 {
 		device_type = "memory";
-		reg = <0x0 0x80000000 0x0 0x80000000>;
+		reg = <0x0 0x80000000 0x0 0x40000000>;
 
 		/* USER CODE BEGIN memory */
 		/* USER CODE END memory */
@@ -744,6 +744,21 @@
 		};
 	};
 
+	tim1_pins_mx: tim1_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 8, AF8)>; /* TIM1_CH4 */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim1_sleep_pins_mx: tim1_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('D', 8, ANALOG)>; /* TIM1_CH4 */
+		};
+	};
+
 	tim16_pwm_pins_mx: tim16_pwm_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 0, AF7)>; /* TIM16_CH1 */
@@ -1448,6 +1463,9 @@
 };
 
 &timers1 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&tim1_pins_mx>;
+	pinctrl-1 = <&tim1_sleep_pins_mx>;
 	status = "okay";
 
 	/* USER CODE BEGIN timers1 */
@@ -1665,7 +1683,7 @@
 		 <&rcc CK_LPTIM4_AM>,
 		 <&scmi_clk CK_SCMI_IPCC2>,
 		 <&scmi_clk CK_SCMI_IPCC2_AM>;
-	status = "disable";
+	status = "disabled";
 };
 
 &ahbsr {
