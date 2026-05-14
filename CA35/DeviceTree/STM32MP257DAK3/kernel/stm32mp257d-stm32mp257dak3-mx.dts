@@ -42,6 +42,7 @@
 		serial0 = &usart2;
 		serial1 = &usart1;
 		serial2 = &uart7;
+		serial3 = &uart4;
 	};
 	
 	chosen{
@@ -789,6 +790,49 @@
 		};
 	};
 
+	uart4_pins_mx: uart4_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('B', 4, AF3)>, /* UART4_CTS */
+					 <STM32_PINMUX('B', 6, AF3)>; /* UART4_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 5, AF3)>, /* UART4_RTS */
+					 <STM32_PINMUX('B', 7, AF3)>; /* UART4_TX */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	uart4_idle_pins_mx: uart4_idle_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('B', 4, ANALOG)>, /* UART4_CTS */
+					 <STM32_PINMUX('B', 7, ANALOG)>; /* UART4_TX */
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 5, AF3)>; /* UART4_RTS */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+		pins3 {
+			pinmux = <STM32_PINMUX('B', 6, AF3)>; /* UART4_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+	};
+
+	uart4_sleep_pins_mx: uart4_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 4, ANALOG)>, /* UART4_CTS */
+					 <STM32_PINMUX('B', 5, ANALOG)>, /* UART4_RTS */
+					 <STM32_PINMUX('B', 6, ANALOG)>, /* UART4_RX */
+					 <STM32_PINMUX('B', 7, ANALOG)>; /* UART4_TX */
+		};
+	};
+
 	uart7_pins_mx: uart7_mx-0 {
 		pins1 {
 			pinmux = <STM32_PINMUX('D', 0, AF6)>; /* UART7_RX */
@@ -1020,7 +1064,7 @@
 };
 
 &dsi {
-	status = "okay";
+	status = "disabled";
 
 	/* USER CODE BEGIN dsi */
 	vdd-supply = <&scmi_vddcore>;
@@ -1496,6 +1540,19 @@
 
 	/* USER CODE BEGIN timers20 */
 	/* USER CODE END timers20 */
+};
+
+&uart4 {
+	pinctrl-names = "default", "idle", "sleep";
+	pinctrl-0 = <&uart4_pins_mx>;
+	pinctrl-1 = <&uart4_idle_pins_mx>;
+	pinctrl-2 = <&uart4_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN uart4 */
+	/delete-property/ dmas;
+	/delete-property/ dma-names;
+	/* USER CODE END uart4 */
 };
 
 &uart7 {
