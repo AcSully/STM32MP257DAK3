@@ -46,8 +46,8 @@ _virtio_shmem_size = 32K;  /* size of the virtio pool used fior rpmsg communicat
 /* Memories definition */
 MEMORY
 {
-  FLASH	(xrw)	: ORIGIN = 0x80100600, LENGTH = 8387072
   NS_VECTOR_TBL	(xrw)	: ORIGIN = 0x80100000, LENGTH = 1536
+  FLASH	(rx)	: ORIGIN = 0x80100600, LENGTH = 8387072
   VIRTIO_SHMEM	(xrw)	: ORIGIN = 0x812f8000, LENGTH = 32K
   RAM	(xrw)	: ORIGIN = 0x80a00000, LENGTH = 1024K
   IPC_SHMEM_1	(xrw)	: ORIGIN = 0x81200000, LENGTH = 992K

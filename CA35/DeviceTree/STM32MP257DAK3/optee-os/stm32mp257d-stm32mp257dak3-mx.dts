@@ -25,7 +25,7 @@
 /* USER CODE END includes */
 
 / {
-	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11";
+	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v26.06.10";
 	compatible = "st,stm32mp257d-stm32mp257dak3-mx", "st,stm32mp257";
 
 	memory@80000000 {

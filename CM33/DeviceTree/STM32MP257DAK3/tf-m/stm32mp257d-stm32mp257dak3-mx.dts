@@ -8,19 +8,19 @@
  * https://wiki.st.com/stm32mpu/wiki/Category:Device_tree_configuration
  */
 /dts-v1/;
-#include "dt-bindings/clock/stm32mp25-clksrc.h"
-#include "dt-bindings/reset/stm32mp25-resets.h"
+#include <dt-bindings/clock/stm32mp25-clksrc.h>
+#include <dt-bindings/reset/st,stm32mp25-rcc.h>
 #include <dt-bindings/pinctrl/stm32-pinfunc.h>
 #include "stm32mp257.dtsi"
 #include "stm32mp257d-stm32mp257dak3-mx-rcc.dtsi"
 #include "stm32mp257d-stm32mp257dak3-mx-resmem.dtsi"
-#include "stm32mp25xxak-pinctrl.dtsi"
+#include "stm32mp25xxai-pinctrl.dtsi"
 
 /* USER CODE BEGIN includes */
 /* USER CODE END includes */
 
 / {
-	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11";
+	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v26.06.10";
 	compatible = "st,stm32mp257d-stm32mp257dak3-mx", "st,stm32mp257";
 
 	memory@80000000 {
@@ -58,6 +58,14 @@
 
 	/* USER CODE BEGIN systick */
 	/* USER CODE END systick */
+};
+
+&sau {
+	memory-region = <&cm33_cube_fw>, <&cm33_cube_data>, <&ipc_shmem>;
+	status = "okay";
+
+	/* USER CODE BEGIN sau */
+	/* USER CODE END sau */
 };
 
 /* USER CODE BEGIN addons */

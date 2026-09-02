@@ -88,22 +88,6 @@
 			/* USER CODE END ddr_param */
 		};
 
-		test51: test51@a09f000 {
-			reg = <0x0 0xa09f000 0x0 0x20000>;
-			no-map;
-
-			/* USER CODE BEGIN test51 */
-			/* USER CODE END test51 */
-		};
-
-		test52: test52@a0bf000 {
-			reg = <0x0 0xa0bf000 0x0 0x1000>;
-			no-map;
-
-			/* USER CODE BEGIN test52 */
-			/* USER CODE END test52 */
-		};
-
 		bl31_lowpower: bl31-lowpower@42000000 {
 			reg = <0x0 0x42000000 0x0 0x1000>;
 			no-map;
@@ -120,12 +104,12 @@
 			/* USER CODE END tfm_its */
 		};
 
-		mm_ospi1: mm-ospi1@60000000 {
+		mm_ospi2: mm-ospi2@60000000 {
 			reg = <0x0 0x60000000 0x0 0x10000000>;
 			no-map;
 
-			/* USER CODE BEGIN mm_ospi1 */
-			/* USER CODE END mm_ospi1 */
+			/* USER CODE BEGIN mm_ospi2 */
+			/* USER CODE END mm_ospi2 */
 		};
 
 		tfm_code: tfm-code@80000000 {
@@ -249,6 +233,10 @@
 		};
 
 		/* USER CODE BEGIN reserved-memory */
+		linuxkernel2: linuxkernel2@100000000 {
+			reg = <0x1 0x00000000 0x0 0x80000000>;
+			no-map;
+		};
 		/* USER CODE END reserved-memory */
 	};
 };
