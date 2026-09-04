@@ -88,22 +88,6 @@
 			/* USER CODE END ddr_param */
 		};
 
-		test51: test51@a09f000 {
-			reg = <0x0 0xa09f000 0x0 0x20000>;
-			no-map;
-
-			/* USER CODE BEGIN test51 */
-			/* USER CODE END test51 */
-		};
-
-		test52: test52@a0bf000 {
-			reg = <0x0 0xa0bf000 0x0 0x1000>;
-			no-map;
-
-			/* USER CODE BEGIN test52 */
-			/* USER CODE END test52 */
-		};
-
 		bl31_lowpower: bl31-lowpower@42000000 {
 			reg = <0x0 0x42000000 0x0 0x1000>;
 			no-map;
@@ -169,7 +153,7 @@
 		};
 
 		spare1: spare1@81300000 {
-			reg = <0x0 0x81300000 0x0 0xCC0000>;
+			reg = <0x0 0x81300000 0x0 0xcc0000>;
 			no-map;
 
 			/* USER CODE BEGIN spare1 */
@@ -193,47 +177,47 @@
 		};
 
 		linuxkernel1: linuxkernel1@84000000 {
-			reg = <0x0 0x84000000 0x0 0x36800000>;
+			reg = <0x0 0x84000000 0x0 0x76800000>;
 			no-map;
 
 			/* USER CODE BEGIN linuxkernel1 */
 			/* USER CODE END linuxkernel1 */
 		};
 
-		gpu_reserved: gpu-reserved@ba800000 {
-			reg = <0x0 0xba800000 0x0 0x4000000>;
+		gpu_reserved: gpu-reserved@fa800000 {
+			reg = <0x0 0xfa800000 0x0 0x4000000>;
 			no-map;
 
 			/* USER CODE BEGIN gpu_reserved */
 			/* USER CODE END gpu_reserved */
 		};
 
-		vdec_reserved: vdec-reserved@be800000 {
-			reg = <0x0 0xbe800000 0x0 0x0000>;
+		vdec_reserved: vdec-reserved@fe800000 {
+			reg = <0x0 0xfe800000 0x0 0x0000>;
 			no-map;
 
 			/* USER CODE BEGIN vdec_reserved */
 			/* USER CODE END vdec_reserved */
 		};
 
-		venc_reserved: venc-reserved@be800000 {
-			reg = <0x0 0xbe800000 0x0 0x0000>;
+		venc_reserved: venc-reserved@fe800000 {
+			reg = <0x0 0xfe800000 0x0 0x0000>;
 			no-map;
 
 			/* USER CODE BEGIN venc_reserved */
 			/* USER CODE END venc_reserved */
 		};
 
-		ltdc_sec_layer: ltdc-sec-layer@be800000 {
-			reg = <0x0 0xbe800000 0x0 0x800000>;
+		ltdc_sec_layer: ltdc-sec-layer@fe800000 {
+			reg = <0x0 0xfe800000 0x0 0x800000>;
 			no-map;
 
 			/* USER CODE BEGIN ltdc_sec_layer */
 			/* USER CODE END ltdc_sec_layer */
 		};
 
-		ltdc_sec_rotation: ltdc-sec-rotation@bf000000 {
-			reg = <0x0 0xbf000000 0x0 0x1000000>;
+		ltdc_sec_rotation: ltdc-sec-rotation@ff000000 {
+			reg = <0x0 0xff000000 0x0 0x1000000>;
 			no-map;
 
 			/* USER CODE BEGIN ltdc_sec_rotation */
@@ -249,6 +233,10 @@
 		};
 
 		/* USER CODE BEGIN reserved-memory */
+		linuxkernel2: linuxkernel2@100000000 {
+			reg = <0x1 0x00000000 0x0 0x80000000>;
+			no-map;
+		};
 		/* USER CODE END reserved-memory */
 	};
 };

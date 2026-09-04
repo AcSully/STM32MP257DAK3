@@ -18,6 +18,7 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
+#include "copro_sync.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
@@ -54,6 +55,7 @@ void SystemClock_Config(void);
 static void MX_GPIO_Init(void);
 static void MX_ICACHE_Init(void);
 static void MX_IPCC1_Init(void);
+static void MX_RTC_Init(void);
 static void MX_UART4_Init(void);
 /* USER CODE BEGIN PFP */
 
@@ -74,6 +76,10 @@ int main(void)
   /* USER CODE BEGIN 1 */
 
   /* USER CODE END 1 */
+  #if defined(DEBUG)
+    volatile uint32_t debug = 1;
+    while(debug);   // waiting for ST-LINK attachment. User can change "debug" to 0 to continue the execution.
+  #endif
 
   /* MCU Configuration--------------------------------------------------------*/
 
@@ -84,11 +90,23 @@ int main(void)
 
   /* USER CODE END Init */
 
-  /* Configure the system clock */
-  SystemClock_Config();
+    /* Configure the system clock */
+  if(IS_DEVELOPER_BOOT_MODE())
+  {
+    SystemClock_Config();
+  }
+  else
+  {
+   SystemCoreClockUpdate();
+  }
 
-  /* IPCC initialisation */
-  MX_IPCC1_Init();
+  if(!IS_DEVELOPER_BOOT_MODE())
+  {
+    /* IPCC initialisation */
+    MX_IPCC1_Init();
+    /*Corpo Sync Initialization*/
+    CoproSync_Init();
+  }
 
   /* USER CODE BEGIN SysInit */
 
@@ -97,6 +115,7 @@ int main(void)
   /* Initialize all configured peripherals */
   MX_GPIO_Init();
   MX_ICACHE_Init();
+  MX_RTC_Init();
   MX_UART4_Init();
   /* USER CODE BEGIN 2 */
 
@@ -165,6 +184,27 @@ static void MX_IPCC1_Init(void)
   /* USER CODE BEGIN IPCC1_Init 2 */
 
   /* USER CODE END IPCC1_Init 2 */
+
+}
+
+/**
+  * @brief RTC Initialization Function
+  * @param None
+  * @retval None
+  */
+static void MX_RTC_Init(void)
+{
+
+  /* USER CODE BEGIN RTC_Init 0 */
+
+  /* USER CODE END RTC_Init 0 */
+
+  /* USER CODE BEGIN RTC_Init 1 */
+
+  /* USER CODE END RTC_Init 1 */
+  /* USER CODE BEGIN RTC_Init 2 */
+
+  /* USER CODE END RTC_Init 2 */
 
 }
 

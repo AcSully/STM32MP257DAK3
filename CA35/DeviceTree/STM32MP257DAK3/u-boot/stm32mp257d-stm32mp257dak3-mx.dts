@@ -21,12 +21,12 @@
 /* USER CODE END includes */
 
 / {
-	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v25.06.11";
+	model = "STMicroelectronics custom STM32CubeMX board - openstlinux-6.6-yocto-scarthgap-mpu-v26.06.10";
 	compatible = "st,stm32mp257d-stm32mp257dak3-mx", "st,stm32mp257";
 
 	memory@80000000 {
 		device_type = "memory";
-		reg = <0x0 0x80000000 0x0 0x40000000>;
+		reg = <0x0 0x80000000 0x0 0x80000000>;
 
 		/* USER CODE BEGIN memory */
 		/* USER CODE END memory */
@@ -516,6 +516,7 @@
 };
 
 &pinctrl_z {
+
 	i2c8_pins_z_mx: i2c8_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('Z', 4, AF8)>, /* I2C8_SCL */
@@ -523,6 +524,13 @@
 			bias-disable;
 			drive-open-drain;
 			slew-rate = <0>;
+		};
+	};
+
+	i2c8_sleep_pins_z_mx: i2c8_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('Z', 4, ANALOG)>, /* I2C8_SCL */
+					 <STM32_PINMUX('Z', 9, ANALOG)>; /* I2C8_SDA */
 		};
 	};
 
@@ -751,6 +759,13 @@
 
 	/* USER CODE BEGIN pcie_rc */
 	/* USER CODE END pcie_rc */
+};
+
+&rtc {
+	status = "okay";
+
+	/* USER CODE BEGIN rtc */
+	/* USER CODE END rtc */
 };
 
 &sdmmc1 {
