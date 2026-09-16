@@ -135,6 +135,7 @@
 	status = "okay";
 
 	/* USER CODE BEGIN bsec */
+	// TODO: niuke
 	board_id: board_id@3d8 {
 		reg = <0x3d8 0x4>;
 	};
@@ -150,6 +151,13 @@
 	vpp-supply = <&vpp_ddr>;
 	vref-supply = <&vref_ddr>;
 	/* USER CODE END ddr */
+};
+
+&hash {
+	status = "okay";
+
+	/* USER CODE BEGIN hash */
+	/* USER CODE END hash */
 };
 
 &i2c7 {
@@ -262,10 +270,33 @@
 	/* USER CODE END i2c7 */
 };
 
+&iwdg1 {
+	status = "okay";
+
+	/* USER CODE BEGIN iwdg1 */
+	timeout-sec = <32>;
+	/* USER CODE END iwdg1 */
+};
+
 &pwr {
 	status = "okay";
 
 	/* USER CODE BEGIN pwr */
+	vddio1: vddio1 {
+		vddio1-supply = <&vddio_sdcard>;
+	};
+	vddio2: vddio2 {
+		vddio2-supply = <&v1v8>;
+	};
+	vddio3: vddio3 {
+		vddio3-supply = <&vddio_pmic>;
+	};
+	vddio4: vddio4 {
+		vddio4-supply = <&vddio_pmic>;
+	};
+	vddio: vddio {
+		vdd-supply = <&vddio_pmic>;
+	};
 	/* USER CODE END pwr */
 };
 
@@ -289,6 +320,10 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc1 */
+	st,neg-edge;
+	bus-width = <4>;
+	vmmc-supply = <&vdd_sdcard>;
+	vqmmc-supply = <&vddio1>;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -298,6 +333,13 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sdmmc2 */
+	non-removable;
+	no-sd;
+	no-sdio;
+	st,neg-edge;
+	bus-width = <8>;
+	vmmc-supply = <&vdd_emmc>;
+	vqmmc-supply = <&vddio2>;
 	/* USER CODE END sdmmc2 */
 };
 

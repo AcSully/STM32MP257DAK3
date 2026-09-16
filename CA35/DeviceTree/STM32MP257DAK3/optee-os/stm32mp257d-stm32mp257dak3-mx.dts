@@ -89,6 +89,13 @@
 	/* USER CODE END bsec */
 };
 
+&hash {
+	status = "okay";
+
+	/* USER CODE BEGIN hash */
+	/* USER CODE END hash */
+};
+
 &hpdma1 {
 	status = "okay";
 
@@ -454,6 +461,14 @@
 	/* USER CODE END ipcc1 */
 };
 
+&iwdg1 {
+	status = "okay";
+
+	/* USER CODE BEGIN iwdg1 */
+	timeout-sec = <32>;
+	/* USER CODE END iwdg1 */
+};
+
 &m33_rproc {
 	status = "okay";
 
@@ -583,10 +598,16 @@
 	status = "okay";
 };
 
+&risaf2 {
+	status = "okay";
+};
+
+&risaf5 {
+	status = "okay";
+};
+
 &scmi_regulator {
-
 	regulators{
-
 		regulator@b{
 			reg = <VOLTD_SCMI_STPMIC2_BUCK2>;
 			voltd-supply = <&vddcore>;
@@ -625,18 +646,5 @@
 	pinctrl-0 = <&usart2_pins_a>;
 	status = "okay";
 };
-
-&hash {
-	status = "okay";
-};
-
-/*&risaf2 {
-	status = "okay";
-};
-
-&risaf5 {
-	status = "okay";
-};*/
-
 /* USER CODE END addons */
 

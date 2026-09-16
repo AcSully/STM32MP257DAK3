@@ -34,6 +34,8 @@
 
 	/* USER CODE BEGIN root */
 	aliases{
+		ethernet0 = &eth2;
+		ethernet1 = &eth1;
 		serial0 = &usart2;
 	};
 	
@@ -42,6 +44,13 @@
 		#address-cells = <2>;
 		#size-cells = <2>;
 		ranges;
+
+		framebuffer {
+			compatible = "simple-framebuffer";
+			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
+				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+			status = "disabled";
+		};
 	};
 
 	config_adc_mipi_dsi_lcd_id {
@@ -103,18 +112,6 @@
 }; /*root*/
 
 &pinctrl {
-
-	adc3_pins_mx: adc3_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
-		};
-	};
-
-	adc3_sleep_pins_mx: adc3_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
-		};
-	};
 
 	eth1_mdio_pins_mx: eth1_mdio_mx-0 {
 		pins1 {
@@ -542,29 +539,6 @@
 		};
 	};
 	/* USER CODE END pinctrl_z */
-};
-
-&adc_3 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&adc3_pins_mx>;
-	pinctrl-1 = <&adc3_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN adc_3 */
-	vdda-supply = <&vdda_1v8>;
-	vref-supply = <&vddref_1v8>;
-
-	adc3: adc@0 {
-		#address-cells = <1>;
-		#size-cells = <0>;
-		status = "okay";
-
-		channel@2 {
-			reg = <2>;               			/* ADC3 in2 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10us sampling time */
-		};
-	};
-	/* USER CODE END adc_3 */
 };
 
 &combophy {

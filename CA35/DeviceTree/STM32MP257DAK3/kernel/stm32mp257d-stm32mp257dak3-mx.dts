@@ -241,18 +241,6 @@
 
 &pinctrl {
 
-	adc3_pins_mx: adc3_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
-		};
-	};
-
-	adc3_sleep_pins_mx: adc3_sleep_mx-0 {
-		pins {
-			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
-		};
-	};
-
 	adc_12_pins_mx: adc_12_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 15, ANALOG)>; /* ADC1_INP15 */
@@ -954,18 +942,6 @@
 		};
 	};
 	/* USER CODE END adc_12 */
-};
-
-&adc_3 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&adc3_pins_mx>;
-	pinctrl-1 = <&adc3_sleep_pins_mx>;
-	status = "okay";
-
-	/* USER CODE BEGIN adc_3 */
-	vdda-supply = <&scmi_v1v8>;
-	vref-supply = <&scmi_v1v8>;
-	/* USER CODE END adc_3 */
 };
 
 &combophy {
