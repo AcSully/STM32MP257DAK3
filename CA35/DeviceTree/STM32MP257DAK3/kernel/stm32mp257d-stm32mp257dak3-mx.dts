@@ -49,10 +49,13 @@
 		#address-cells = <2>;
 		#size-cells = <2>;
 		ranges;
-	};
-
-	config_adc_mipi_dsi_lcd_id {
-		st,adc_mipi_dsi_lcd_id = <&adc3 2>;
+		
+		framebuffer {
+			compatible = "simple-framebuffer";
+			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
+				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+			status = "disabled";
+		};
 	};
 	
 /*
@@ -65,12 +68,6 @@
 	dsi_lcd_id {
         dsi_select_id = <2>;
     };
-
-	rgb_lcd_id_pinctrl {
-		gpior = <&gpiog 7 	GPIO_ACTIVE_LOW>;	//LCD_R7
-		gpiog = <&gpiog 13 	GPIO_ACTIVE_LOW>;	//LCD_G7
-		gpiob = <&gpioi 4 	GPIO_ACTIVE_LOW>;	//LCD_B7
-	};
 
 	panel_dsi_backlight: panel-dsi-backlight {
         compatible = "pwm-backlight";
@@ -922,23 +919,21 @@
 };
 
 &adc_12 {
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&adc_12_pins_mx>;
-	pinctrl-1 = <&adc_12_sleep_pins_mx>;
-	status = "okay";
+	/* Don't need a pinctrl for ANA0 dedicated pin e.g. Channel@0 */
+	//pinctrl-names = "default", "sleep";
+	//pinctrl-0 = <&adc_12_pins_mx>;
+	//pinctrl-1 = <&adc_12_sleep_pins_mx>;
+	status = "disabled";
 
 	/* USER CODE BEGIN adc_12 */
 	vdda-supply = <&scmi_v1v8>;
 	vref-supply = <&scmi_v1v8>;
 
 	adc1: adc@0 {
-		#address-cells = <1>;
-		#size-cells = <0>;
 		status = "okay";
-
-		channel@15 {
-			reg = <15>;               			/* ADC1 in15 channel is used */
-			st,min-sample-time-ns = <10000>;  	/* 10¦Ìs sampling time */
+		channel@0 {
+			reg = <0>;
+			st,min-sample-time-ns = <400>;
 		};
 	};
 	/* USER CODE END adc_12 */
@@ -952,6 +947,13 @@
 	clock-names = "apb-clk", "ker-clk", "pad-clk";
 	st,rx_equalizer = <1>;
 	/* USER CODE END combophy */
+};
+
+&crc {
+	status = "okay";
+
+	/* USER CODE BEGIN crc */
+	/* USER CODE END crc */
 };
 
 &csi {
@@ -1338,7 +1340,7 @@
 			<&ipc_shmem_1>, <&vdev0vring0>,
 			<&vdev0vring1>, <&vdev0buffer>,
 			<&cm33_sram2>;
-	st,syscfg-nsvtor = <&a35ss_syscfg 0xa8 0xffffff80>;
+	st,syscfg-nsvtor = <&a35ss_syscfg 0x20a8 0xffffff80>;
 	/* USER CODE END m33_rproc */
 };
 
@@ -1368,12 +1370,29 @@
 	status = "okay";
 
 	/* USER CODE BEGIN sai1 */
+	clocks = <&rcc CK_BUS_SAI1>;
+	clock-names = "pclk";
 	/* USER CODE END sai1 */
 
 	sai1a:audio-controller@40290004{
 		status = "okay";
 
 		/* USER CODE BEGIN sai1a */
+		dma-names = "rx";
+		clocks = <&rcc CK_KER_SAI1>, <&sai1b>;
+		clock-names = "sai_ck", "MCLK";
+		dmas = <&hpdma 73 0x43 0x12>;
+		st,sync = <&sai1b 2>;
+		
+		sai1a_port: port {
+			sai1a_endpoint: endpoint {
+				remote-endpoint = <&es8388_rx_endpoint>;
+				dai-format = "i2s";
+				mclk-fs = <256>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+			};
+		};
 		/* USER CODE END sai1a */
 	};
 
@@ -1381,6 +1400,20 @@
 		status = "okay";
 
 		/* USER CODE BEGIN sai1b */
+		#clock-cells = <0>;
+		dma-names = "tx";
+		clock-names = "sai_ck";
+		dmas = <&hpdma 74 0x43 0x21>;
+
+		sai1b_port: port {
+			sai1b_endpoint: endpoint {
+				remote-endpoint = <&es8388_tx_endpoint>;
+				dai-format = "i2s";
+				mclk-fs = <256>;
+				dai-tdm-slot-num = <2>;
+				dai-tdm-slot-width = <32>;
+ 			};
+ 		};	
 		/* USER CODE END sai1b */
 	};
 };
@@ -1574,6 +1607,66 @@
 };
 
 /* USER CODE BEGIN addons */
+&a35ss_syscfg {
+	status = "okay";
+};
+
+&cs_cpu_debug0 {
+	status = "okay";
+};
+
+&cs_cpu_debug1 {
+	status = "okay";
+};
+
+&cs_cti0 {
+	status = "okay";
+};
+
+&cs_cti1 {
+	status = "okay";
+};
+
+&cs_cti_cpu0 {
+	status = "okay";
+};
+
+&cs_cti_cpu1 {
+	status = "okay";
+};
+
+&cs_etf {
+	status = "okay";
+};
+
+&cs_etm0 {
+	status = "okay";
+};
+
+&cs_etm1 {
+	status = "okay";
+};
+
+&cs_etr {
+	status = "okay";
+};
+
+&cs_funnel {
+	status = "okay";
+};
+
+&cs_replicator {
+	status = "okay";
+};
+
+&cs_stm {
+	status = "okay";
+};
+
+&cs_tpiu {
+	status = "okay";
+};
+
 &scmi_regu {
 	scmi_vddio1: regulator@0 {
 		regulator-min-microvolt = <1800000>;
@@ -1657,7 +1750,7 @@
 		 <&rcc CK_LPTIM4_AM>,
 		 <&scmi_clk CK_SCMI_IPCC2>,
 		 <&scmi_clk CK_SCMI_IPCC2_AM>;
-	status = "disabled";
+	status = "okay";
 };
 
 &ahbsr {
@@ -1669,6 +1762,15 @@
 		mbox-names = "rx-tx";
 		status = "okay";
 	};
+};
+
+&arm_wdt {
+	timeout-sec = <32>;
+	status = "okay";
+};
+
+&dbg_bus {
+	status = "okay";
 };
 
 &mlahb {
@@ -1699,57 +1801,11 @@
 
 				port {
 					typec_ep: endpoint {
-						//remote-endpoint = <&dwc3_ep>;
+						remote-endpoint = <&dwc3_ep>;
 					};
 				};
 			};
 		};
-	};
-};
-
-&sai1 {
-	clocks = <&rcc CK_BUS_SAI1>;
-	clock-names = "pclk";
-	pinctrl-names = "default", "sleep";
-	pinctrl-0 = <&sai1a_pins_mx>, <&sai1b_pins_mx>;
-	pinctrl-1 = <&sai1a_sleep_pins_mx>, <&sai1b_sleep_pins_mx>;
-	status = "okay";
-
-	sai1a: audio-controller@40290004 {
-		dma-names = "rx";
-		clocks = <&rcc CK_KER_SAI1>, <&sai1b>;
-		clock-names = "sai_ck", "MCLK";
-		dmas = <&hpdma 73 0x43 0x12>;
-		st,sync = <&sai1b 2>;
-		status = "okay";
-
-		sai1a_port: port {
-			sai1a_endpoint: endpoint {
-				remote-endpoint = <&es8388_rx_endpoint>;
-				dai-format = "i2s";
-				mclk-fs = <256>;
-				dai-tdm-slot-num = <2>;
-				dai-tdm-slot-width = <32>;
-			};
-		};
- 	};
-
-	sai1b: audio-controller@40290024 {
-		#clock-cells = <0>;
-		dma-names = "tx";
-		clock-names = "sai_ck";
-		dmas = <&hpdma 74 0x43 0x21>;
-		status = "okay";
-
-		sai1b_port: port {
-			sai1b_endpoint: endpoint {
-				remote-endpoint = <&es8388_tx_endpoint>;
-				dai-format = "i2s";
-				mclk-fs = <256>;
-				dai-tdm-slot-num = <2>;
-				dai-tdm-slot-width = <32>;
- 			};
- 		};		
 	};
 };
 /* USER CODE END addons */

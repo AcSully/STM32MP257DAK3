@@ -462,7 +462,7 @@
 };
 
 &iwdg1 {
-	status = "okay";
+	status = "disabled";
 
 	/* USER CODE BEGIN iwdg1 */
 	timeout-sec = <32>;
@@ -498,7 +498,7 @@
 		regulator-min-microvolt = <1800000>;
 		regulator-max-microvolt = <1800000>;
 		vdda18adc-supply = <&v1v8>;
-		regulator-always-on;
+		//regulator-always-on;
 	};
 
 	vddgpu: vddgpu {

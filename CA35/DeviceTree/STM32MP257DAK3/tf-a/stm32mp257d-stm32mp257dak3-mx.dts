@@ -271,7 +271,7 @@
 };
 
 &iwdg1 {
-	status = "okay";
+	status = "disabled";
 
 	/* USER CODE BEGIN iwdg1 */
 	timeout-sec = <32>;
