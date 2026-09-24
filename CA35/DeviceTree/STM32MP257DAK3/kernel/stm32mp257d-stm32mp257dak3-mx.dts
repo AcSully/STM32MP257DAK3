@@ -52,8 +52,7 @@
 		
 		framebuffer {
 			compatible = "simple-framebuffer";
-			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
-				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
 			status = "disabled";
 		};
 	};
@@ -1012,13 +1011,13 @@
 
 		port@0 {
 			reg = <0>;
-			dsi_in: endpoint {
+				dsi_in: endpoint {
 			};
 		};
 
 		port@1 {
 			reg = <1>;
-			dsi_out: endpoint {
+				dsi_out: endpoint {
 			};
 		};
 	};
@@ -1436,6 +1435,7 @@
 	sd-uhs-sdr25;
 	sd-uhs-sdr50;
 	sd-uhs-ddr50;
+	sd-uhs-sdr104;
 	/* USER CODE END sdmmc1 */
 };
 
@@ -1455,6 +1455,7 @@
 	vmmc-supply = <&scmi_vdd_emmc>;
 	vqmmc-supply = <&scmi_vddio2>;
 	mmc-ddr-1_8v;
+	mmc-hs200-1_8v;
 	/* USER CODE END sdmmc2 */
 };
 
@@ -1750,7 +1751,7 @@
 		 <&rcc CK_LPTIM4_AM>,
 		 <&scmi_clk CK_SCMI_IPCC2>,
 		 <&scmi_clk CK_SCMI_IPCC2_AM>;
-	status = "okay";
+	status = "disabled";
 };
 
 &ahbsr {
@@ -1766,7 +1767,7 @@
 
 &arm_wdt {
 	timeout-sec = <32>;
-	status = "okay";
+	status = "disabled";
 };
 
 &dbg_bus {
@@ -1779,7 +1780,7 @@
 		reg = <1 0>;
 		#interrupt-cells = <1>;
 		interrupt-controller;
-		status = "okay";
+		status = "disabled";
 	};
 
 	i2c_rpmsg: i2c@2 {
@@ -1801,12 +1802,16 @@
 
 				port {
 					typec_ep: endpoint {
-						remote-endpoint = <&dwc3_ep>;
+						//remote-endpoint = <&dwc3_ep>;
 					};
 				};
 			};
 		};
 	};
+};
+
+&ipcc2 {
+	status = "okay";
 };
 /* USER CODE END addons */
 

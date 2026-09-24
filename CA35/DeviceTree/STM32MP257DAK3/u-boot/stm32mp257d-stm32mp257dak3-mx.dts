@@ -47,20 +47,9 @@
 
 		framebuffer {
 			compatible = "simple-framebuffer";
-			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>,
-				 <&rcc CK_BUS_LVDS>, <&rcc CK_KER_LVDSPHY>;
+			clocks = <&rcc CK_BUS_LTDC>, <&rcc CK_KER_LTDC>;
 			status = "disabled";
 		};
-	};
-
-	config_adc_mipi_dsi_lcd_id {
-		st,adc_mipi_dsi_lcd_id = <&adc3 2>;
-	};
-
-	rgb_lcd_id_pinctrl {
-		gpior = <&gpiog 7 	GPIO_ACTIVE_LOW>;	//LCD_R7
-		gpiog = <&gpiog 13 	GPIO_ACTIVE_LOW>;	//LCD_G7
-		gpiob = <&gpioi 4 	GPIO_ACTIVE_LOW>;	//LCD_B7
 	};
 
 	panel_backlight: panel-backlight {
@@ -70,31 +59,31 @@
 		status = "okay";
 	};
 
-        vdd_5v: regulator-vdd-5v {
-                compatible = "regulator-fixed";
-                regulator-name = "vdd_5v";
-                regulator-min-microvolt = <5000000>;
-                regulator-max-microvolt = <5000000>;
-                regulator-always-on;
-                regulator-boot-on;
-        };
+	vdd_5v: regulator-vdd-5v {
+		compatible = "regulator-fixed";
+		regulator-name = "vdd_5v";
+		regulator-min-microvolt = <5000000>;
+		regulator-max-microvolt = <5000000>;
+		regulator-always-on;
+		regulator-boot-on;
+	};
 	
 	vdda_1v8: regulator-vdda-1v8 {
-			compatible = "regulator-fixed";
-			regulator-name = "vdda_1v8";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-always-on;
-			regulator-boot-on;
+		compatible = "regulator-fixed";
+		regulator-name = "vdda_1v8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-always-on;
+		regulator-boot-on;
 	};
 
 	vddref_1v8: regulator-vddref-1v8 {
-			compatible = "regulator-fixed";
-			regulator-name = "vddref_1v8";
-			regulator-min-microvolt = <1800000>;
-			regulator-max-microvolt = <1800000>;
-			regulator-always-on;
-			regulator-boot-on;
+		compatible = "regulator-fixed";
+		regulator-name = "vddref_1v8";
+		regulator-min-microvolt = <1800000>;
+		regulator-max-microvolt = <1800000>;
+		regulator-always-on;
+		regulator-boot-on;
 	};
 	/* USER CODE END root */
 
@@ -580,7 +569,6 @@
     	panel_dsi: panel@0 {
         	compatible = "alientek,mipi-lcd";
         	reg = <0>;
-		//dsi-lanes = <4>;
         	reset-gpios = <&gpioi 11 GPIO_ACTIVE_LOW>;
         	backlight = <&panel_backlight>;
         	power-supply = <&vdd_5v>;
