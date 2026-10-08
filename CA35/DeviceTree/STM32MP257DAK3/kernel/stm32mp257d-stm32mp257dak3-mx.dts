@@ -163,7 +163,19 @@
 			regulator-always-on;
 			regulator-boot-on;
 	};
-	
+
+	/* VBUS 5V source enable of the Type-C port (upstream fusb302 uses
+	 * vbus-supply, the vendor driver used vbus-5v-gpios directly).
+	 */
+	vbus_5v: regulator-vbus-5v {
+			compatible = "regulator-fixed";
+			regulator-name = "vbus_5v";
+			regulator-min-microvolt = <5000000>;
+			regulator-max-microvolt = <5000000>;
+			gpio = <&gpioz 5 GPIO_ACTIVE_HIGH>;
+			enable-active-high;
+	};
+
 	vdda_1v8: regulator-vdda-1v8 {
 			compatible = "regulator-fixed";
 			regulator-name = "vdda_1v8";
@@ -1026,7 +1038,10 @@
 		compatible = "alientek,mipi-lcd";
 		reg = <0>;
 		dsi-lanes = <4>;
-		reset-gpio = <&gpioi 11 GPIO_ACTIVE_LOW>;
+		/* the driver asks for con_id "reset", so the property must be
+		 * reset-gpios (reset-gpio was never picked up).
+		 */
+		reset-gpios = <&gpioi 11 GPIO_ACTIVE_LOW>;
 		power-supply = <&vdd_5v>;
 		backlight = <&panel_dsi_backlight>;
 		status = "okay";
@@ -1067,6 +1082,16 @@
 			reset-gpios =  <&gpiof 3 GPIO_ACTIVE_LOW>;
 			reset-assert-us = <10000>;
 			reset-deassert-us = <80000>;
+			/* YT8531 RGMII delays: upstream driver defaults to 1950ps
+			 * when the properties are absent, i.e. the same ~2ns the
+			 * vendor driver hardcoded in 0xa001.
+			 */
+			rx-internal-delay-ps = <1950>;
+			tx-internal-delay-ps = <1950>;
+			/* this board uses the PHY clock output (upstream driver
+			 * then keeps 0xa012 = 0xd0, like the vendor driver did)
+			 */
+			motorcomm,clk-out-frequency-hz = <125000000>;
 			realtek,eee-disable;
 			reg = <4>;
 		};
@@ -1095,6 +1120,10 @@
 			reset-gpios =  <&gpiof 4 GPIO_ACTIVE_LOW>;
 			reset-assert-us = <10000>;
 			reset-deassert-us = <80000>;
+			/* see eth1 phy node: 1950ps == the vendor driver's 2ns */
+			rx-internal-delay-ps = <1950>;
+			tx-internal-delay-ps = <1950>;
+			motorcomm,clk-out-frequency-hz = <125000000>;
 			realtek,eee-disable;
 			reg = <1>;
 		};
@@ -1169,8 +1198,16 @@
 	fusb302@22 {
 		compatible = "fcs,fusb302","fairchild,fusb302";
 		reg = <0x22>;
+		/* vendor driver used "int-n-gpios", the in-tree TCPM driver
+		 * looks up "fcs,int_n-gpios"; keep both so either binds.
+		 */
 		int-n-gpios = <&gpioz 6 GPIO_ACTIVE_HIGH>;
+		fcs,int_n-gpios = <&gpioz 6 GPIO_ACTIVE_HIGH>;
+		/* vendor driver drove VBUS directly; in-tree driver wants a
+		 * regulator supply (see vbus_5v above).
+		 */
 		vbus-5v-gpios = <&gpioz 5 GPIO_ACTIVE_HIGH>;
+		vbus-supply = <&vbus_5v>;
 		status = "okay";
 
 		connector {
