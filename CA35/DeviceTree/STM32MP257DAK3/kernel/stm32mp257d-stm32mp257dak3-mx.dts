@@ -1070,6 +1070,7 @@
 
 	/* USER CODE BEGIN eth1 */
 	phy-mode = "rgmii-id";
+	max-speed = <1000>;
 	phy-handle = <&phy1_eth1>;
 	st,eth-clk-sel;
 
@@ -1092,7 +1093,6 @@
 			 * then keeps 0xa012 = 0xd0, like the vendor driver did)
 			 */
 			motorcomm,clk-out-frequency-hz = <125000000>;
-			realtek,eee-disable;
 			reg = <4>;
 		};
 	};
@@ -1124,7 +1124,6 @@
 			rx-internal-delay-ps = <1950>;
 			tx-internal-delay-ps = <1950>;
 			motorcomm,clk-out-frequency-hz = <125000000>;
-			realtek,eee-disable;
 			reg = <1>;
 		};
 	};
