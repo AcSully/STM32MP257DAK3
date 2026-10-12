@@ -1212,6 +1212,11 @@
 		connector {
 			compatible = "usb-c-connector";
 			label = "USB-C";
+			/* without data-role the typec class defaults the port to
+			 * TYPEC_PORT_DFP (host only) and tcpm can never switch
+			 * the port to device, so the gadget never attaches.
+			 */
+			data-role = "dual";
 			power-role = "dual";
 			power-opmode = "default";
 			try-power-role = "sink";
