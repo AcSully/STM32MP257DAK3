@@ -127,7 +127,7 @@
 
 		led {
 			function = LED_FUNCTION_HEARTBEAT;
-			color = <LED_COLOR_ID_BLUE>;
+			color = <LED_COLOR_ID_RED>;
 			gpios = <&gpioh 4 GPIO_ACTIVE_LOW>;
 			linux,default-trigger = "heartbeat";
 			default-state = "off";
@@ -230,6 +230,18 @@
 }; /*root*/
 
 &pinctrl {
+
+	adc3_pins_mx: adc3_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
+		};
+	};
+
+	adc3_sleep_pins_mx: adc3_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('F', 10, ANALOG)>; /* ADC3_INP2 */
+		};
+	};
 
 	adc_12_pins_mx: adc_12_mx-0 {
 		pins {
@@ -752,6 +764,21 @@
 		};
 	};
 
+	tim17_pwm_pins_mx: tim17_pwm_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 10, AF7)>; /* TIM17_CH1N */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	tim17_pwm_sleep_pins_mx: tim17_pwm_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 10, ANALOG)>; /* TIM17_CH1N */
+		};
+	};
+
 	tim20_pwm_pins_mx: tim20_pwm_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 3, AF8)>; /* TIM20_CH3 */
@@ -764,6 +791,38 @@
 	tim20_pwm_sleep_pins_mx: tim20_pwm_sleep_mx-0 {
 		pins {
 			pinmux = <STM32_PINMUX('B', 3, ANALOG)>; /* TIM20_CH3 */
+		};
+	};
+
+	uart4_pins_mx: uart4_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('B', 6, AF3)>; /* UART4_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 7, AF3)>; /* UART4_TX */
+			bias-disable;
+			drive-push-pull;
+			slew-rate = <0>;
+		};
+	};
+
+	uart4_idle_pins_mx: uart4_idle_mx-0 {
+		pins1 {
+			pinmux = <STM32_PINMUX('B', 6, AF3)>; /* UART4_RX */
+			bias-disable;
+			drive-push-pull;
+		};
+		pins2 {
+			pinmux = <STM32_PINMUX('B', 7, ANALOG)>; /* UART4_TX */
+		};
+	};
+
+	uart4_sleep_pins_mx: uart4_sleep_mx-0 {
+		pins {
+			pinmux = <STM32_PINMUX('B', 6, ANALOG)>, /* UART4_RX */
+					 <STM32_PINMUX('B', 7, ANALOG)>; /* UART4_TX */
 		};
 	};
 
@@ -890,8 +949,7 @@
 		pins {
 			pinmux = <STM32_PINMUX('Z', 0, AF3)>, /* SPI8_MOSI */
 					 <STM32_PINMUX('Z', 1, AF3)>, /* SPI8_MISO */
-					 <STM32_PINMUX('Z', 2, AF3)>, /* SPI8_SCK */
-					 <STM32_PINMUX('Z', 3, AF3)>; /* SPI8_NSS */
+					 <STM32_PINMUX('Z', 2, AF3)>; /* SPI8_SCK */
 			bias-disable;
 			drive-push-pull;
 			slew-rate = <0>;
@@ -902,8 +960,7 @@
 		pins {
 			pinmux = <STM32_PINMUX('Z', 0, ANALOG)>, /* SPI8_MOSI */
 					 <STM32_PINMUX('Z', 1, ANALOG)>, /* SPI8_MISO */
-					 <STM32_PINMUX('Z', 2, ANALOG)>, /* SPI8_SCK */
-					 <STM32_PINMUX('Z', 3, ANALOG)>; /* SPI8_NSS */
+					 <STM32_PINMUX('Z', 2, ANALOG)>; /* SPI8_SCK */
 		};
 	};
 
@@ -931,6 +988,16 @@
 		};
 	};
 	/* USER CODE END adc_12 */
+};
+
+&adc_3 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&adc3_pins_mx>;
+	pinctrl-1 = <&adc3_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN adc_3 */
+	/* USER CODE END adc_3 */
 };
 
 &combophy {
@@ -1176,6 +1243,14 @@
 	/* spare dmas for other usage */
 	/delete-property/dmas;
 	/delete-property/dma-names;
+
+	eeprom@50 {
+		compatible = "microchip,24c64", "atmel,24c64";
+		pagesize = <32>;
+		reg = <0x50>;
+		vcc-supply = <&vdd_3v3>;
+		status = "okay";
+	};
 
 	fusb302@22 {
 		compatible = "fcs,fusb302","fairchild,fusb302";
@@ -1490,6 +1565,19 @@
 	status = "okay";
 
 	/* USER CODE BEGIN spi8 */
+	/* PZ3 as GPIO chip select: the STM32 SPI controller keeps its
+	 * hardware NSS asserted after a transfer, which leaves the NOR flash
+	 * stuck in the previous command (all reads return 0x00).
+	 * Do not put PZ3 in any pinctrl group above.
+	 */
+	cs-gpios = <&gpioz 3 GPIO_ACTIVE_LOW>;
+
+	spiflash: flash@0 {
+		compatible = "jedec,spi-nor";
+		reg = <0>;
+		spi-max-frequency = <50000000>;
+		status = "okay";
+	};
 	/* USER CODE END spi8 */
 };
 
@@ -1519,6 +1607,16 @@
 	/* USER CODE END timers16 */
 };
 
+&timers17 {
+	pinctrl-names = "default", "sleep";
+	pinctrl-0 = <&tim17_pwm_pins_mx>;
+	pinctrl-1 = <&tim17_pwm_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN timers17 */
+	/* USER CODE END timers17 */
+};
+
 &timers20 {
 	pinctrl-names = "default", "sleep";
 	pinctrl-0 = <&tim20_pwm_pins_mx>;
@@ -1527,6 +1625,17 @@
 
 	/* USER CODE BEGIN timers20 */
 	/* USER CODE END timers20 */
+};
+
+&uart4 {
+	pinctrl-names = "default", "idle", "sleep";
+	pinctrl-0 = <&uart4_pins_mx>;
+	pinctrl-1 = <&uart4_idle_pins_mx>;
+	pinctrl-2 = <&uart4_sleep_pins_mx>;
+	status = "okay";
+
+	/* USER CODE BEGIN uart4 */
+	/* USER CODE END uart4 */
 };
 
 &uart7 {
